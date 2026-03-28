@@ -32,6 +32,7 @@ func main() {
 
 	routes.AuthRoutes(router)
 	routes.CareerRoutes(router)
+	routes.AssistantRoutes(router)
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

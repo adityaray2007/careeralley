@@ -23,9 +23,10 @@ export default function SignupPage() {
     setLoading(true)
     setError("")
     try {
-      const res = await post("/signup", { email, password })
-      localStorage.setItem("token", res.token)
-      router.push("/onboarding")
+      await post("/signup", { email, password })
+      const loginRes = await post("/login", { email, password })
+      localStorage.setItem("token", loginRes.token)
+      router.push(loginRes.onboarded ? "/dashboard" : "/onboarding")
     } catch {
       setError("Signup failed. Please try again.")
     } finally {
