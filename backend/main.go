@@ -2,6 +2,7 @@ package main
 
 import (
 	"careeralley/config"
+	"careeralley/controllers"
 	"careeralley/middleware"
 	"careeralley/models"
 	"careeralley/routes"
@@ -20,6 +21,9 @@ func main() {
 
 	config.ConnectDB()
 
+	// Start WebSocket hub in background
+	go controllers.GlobalHub.Run()
+
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
@@ -33,6 +37,7 @@ func main() {
 	routes.AuthRoutes(router)
 	routes.CareerRoutes(router)
 	routes.AssistantRoutes(router)
+	routes.ChatRoutes(router)
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

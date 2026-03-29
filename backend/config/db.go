@@ -39,6 +39,7 @@ func ConnectDB() {
 		&models.CardQuestion{},
 		&models.CardOption{},
 		&models.UserCardAnswer{},
+		&models.ChatMessage{},
 	)
 
 	log.Println("Database connected successfully")
