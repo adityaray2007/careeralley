@@ -23,6 +23,7 @@ func main() {
 
 	// Start WebSocket hub in background
 	go controllers.GlobalHub.Run()
+	go controllers.GlobalInterviewHub.Run()
 
 	router := gin.Default()
 
@@ -38,6 +39,7 @@ func main() {
 	routes.CareerRoutes(router)
 	routes.AssistantRoutes(router)
 	routes.ChatRoutes(router)
+	routes.MockInterviewRoutes(router)
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
