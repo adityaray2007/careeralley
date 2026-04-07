@@ -8,16 +8,14 @@ import (
 )
 
 func MockInterviewRoutes(router *gin.Engine) {
-	protected := router.Group("/mock-interviews")
-	protected.Use(middleware.JWTAuthMiddleware())
-	{
-		protected.GET("", controllers.GetInterviewRequests)
-		protected.POST("", controllers.CreateInterviewRequest)
-		protected.POST("/:id/join", controllers.JoinInterviewRequest)
-		protected.DELETE("/:id", controllers.CancelInterviewRequest)
-		protected.GET("/session/:room_code", controllers.GetSessionInfo)
-	}
+	auth := middleware.JWTAuthMiddleware()
 
-	// WebSocket — auth via query param
-	router.GET("/mock-interviews/session/:room_code/ws", controllers.InterviewWebSocket)
+	router.GET("/mock-interviews", auth, controllers.GetMockInterviews)
+	router.POST("/mock-interviews", auth, controllers.CreateMockInterview)
+	router.GET("/mock-interviews/:id", auth, controllers.GetMockInterview)
+	router.POST("/mock-interviews/:id/join", auth, controllers.JoinMockInterview)
+	router.POST("/mock-interviews/:id/generate-question", auth, controllers.GenerateInterviewQuestion)
+	router.POST("/mock-interviews/:id/score", auth, controllers.ScoreInterviewQuestion)
+	router.POST("/mock-interviews/:id/complete", auth, controllers.CompleteMockInterview)
+	router.DELETE("/mock-interviews/:id", auth, controllers.DeleteMockInterview)
 }

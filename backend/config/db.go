@@ -32,7 +32,6 @@ func ConnectDB() {
 		&models.Resource{},
 		&models.UserProgress{},
 		&models.StudySession{},
-		&models.StudySession{},
 		&models.OnboardingQuestion{},
 		&models.OnboardingOption{},
 		&models.UserOnboardingAnswer{},
@@ -40,9 +39,9 @@ func ConnectDB() {
 		&models.CardOption{},
 		&models.UserCardAnswer{},
 		&models.ChatMessage{},
-		&models.InterviewRequest{},
-		&models.InterviewSession{},
-		&models.InterviewQuestion{},
+		&models.MockInterview{},
+		&models.MockInterviewQuestion{},
+		&models.MockInterviewResult{},
 	)
 
 	log.Println("Database connected successfully")

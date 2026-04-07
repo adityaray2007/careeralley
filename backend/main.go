@@ -7,7 +7,6 @@ import (
 	"careeralley/models"
 	"careeralley/routes"
 	"errors"
-
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -23,7 +22,6 @@ func main() {
 
 	// Start WebSocket hub in background
 	go controllers.GlobalHub.Run()
-	go controllers.GlobalInterviewHub.Run()
 
 	router := gin.Default()
 
@@ -39,7 +37,7 @@ func main() {
 	routes.CareerRoutes(router)
 	routes.AssistantRoutes(router)
 	routes.ChatRoutes(router)
-	routes.MockInterviewRoutes(router)
+	routes.MockInterviewRoutes(router) // ← NEW
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -52,20 +50,15 @@ func main() {
 		userID, exists := c.Get("user_id")
 
 		if !exists {
-			c.JSON(401, gin.H{
-				"error": "User not found in token",
-			})
+			c.JSON(401, gin.H{"error": "User not found in token"})
 			return
 		}
 
 		var user models.User
-
 		result := config.DB.First(&user, userID)
 
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			c.JSON(404, gin.H{
-				"error": "User not found",
-			})
+			c.JSON(404, gin.H{"error": "User not found"})
 			return
 		}
 
@@ -74,7 +67,6 @@ func main() {
 			"name":  user.Name,
 			"email": user.Email,
 		})
-
 	})
 
 	router.Run(":8080")

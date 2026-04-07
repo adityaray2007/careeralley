@@ -4,638 +4,299 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import SidebarLayout from "../../components/SidebarLayout"
 
-const API = "http://localhost:8080"
-
-function formatTime(dateStr) {
-  const d = new Date(dateStr)
-  return d.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+function formatDate(str) {
+  if (!str) return ""
+  return new Date(str).toLocaleDateString("en-US", {
+    month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  })
 }
 
-function timeAgo(dateStr) {
-  const d = new Date(dateStr)
-  const now = new Date()
-  const diff = Math.floor((now - d) / 1000)
-  if (diff < 60) return "just now"
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
-  return `${Math.floor(diff / 86400)}d ago`
-}
-
-function RequestCard({ request, onJoin, onCancel, joiningId }) {
-  const isOwn = request.is_own
-  const isJoining = joiningId === request.id
-
-  return (
-    <div style={{
-      background: "var(--bg-card)",
-      border: isOwn ? "1px solid rgba(181,242,61,0.25)" : "1px solid var(--border)",
-      borderRadius: 20,
-      padding: "24px",
-      boxShadow: isOwn ? "0 0 20px rgba(181,242,61,0.06)" : "var(--shadow)",
-      position: "relative",
-      overflow: "hidden",
-      transition: "all 0.2s",
-      animation: "fadeIn 0.3s ease forwards",
-      opacity: 0,
-    }}
-    onMouseEnter={e => {
-      e.currentTarget.style.borderColor = isOwn ? "rgba(181,242,61,0.4)" : "rgba(181,242,61,0.2)"
-      e.currentTarget.style.transform = "translateY(-2px)"
-    }}
-    onMouseLeave={e => {
-      e.currentTarget.style.borderColor = isOwn ? "rgba(181,242,61,0.25)" : "var(--border)"
-      e.currentTarget.style.transform = "translateY(0)"
-    }}>
-      {/* Background glow for own cards */}
-      {isOwn && (
-        <div style={{
-          position: "absolute", inset: 0, borderRadius: 20,
-          background: "radial-gradient(ellipse at top right, rgba(181,242,61,0.04) 0%, transparent 60%)",
-          pointerEvents: "none",
-        }}/>
-      )}
-
-      {/* Own badge */}
-      {isOwn && (
-        <div style={{
-          position: "absolute", top: 16, right: 16,
-          padding: "3px 10px", borderRadius: 99,
-          background: "var(--neon-subtle)",
-          border: "1px solid rgba(181,242,61,0.25)",
-          fontSize: 10, fontWeight: 700,
-          color: "var(--neon-dim)",
-          fontFamily: "'Syne', sans-serif",
-          letterSpacing: "0.5px",
-        }}>
-          YOUR REQUEST
-        </div>
-      )}
-
-      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 16 }}>
-        <div style={{
-          width: 46, height: 46, borderRadius: 14, flexShrink: 0,
-          background: isOwn ? "var(--neon-subtle)" : "var(--bg-2)",
-          border: `1px solid ${isOwn ? "rgba(181,242,61,0.25)" : "var(--border)"}`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 22,
-        }}>
-          🎤
-        </div>
-        <div style={{ flex: 1, minWidth: 0, paddingRight: isOwn ? 90 : 0 }}>
-          <h3 style={{
-            fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16,
-            color: "var(--text-primary)", marginBottom: 4,
-            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-          }}>
-            {request.topic}
-          </h3>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{
-              width: 22, height: 22, borderRadius: 6,
-              background: "var(--bg-2)", border: "1px solid var(--border)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 11, fontWeight: 800, color: "var(--neon-dim)",
-              fontFamily: "'Syne', sans-serif",
-            }}>
-              {request.user_name?.[0]?.toUpperCase() || "?"}
-            </div>
-            <span style={{ fontSize: 13, color: "var(--text-secondary)", fontFamily: "'DM Sans', sans-serif" }}>
-              {request.user_name}
-            </span>
-            <span style={{ fontSize: 11, color: "var(--text-muted)" }}>·</span>
-            <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'DM Sans', sans-serif" }}>
-              {timeAgo(request.created_at)}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {request.description && (
-        <p style={{
-          fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6,
-          fontFamily: "'DM Sans', sans-serif", marginBottom: 16,
-          display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
-          overflow: "hidden",
-        }}>
-          {request.description}
-        </p>
-      )}
-
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <svg width="12" height="12" fill="none" stroke="var(--text-muted)" strokeWidth="1.8" viewBox="0 0 24 24">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          <span style={{ fontSize: 12, color: "var(--text-muted)", fontFamily: "'DM Sans', sans-serif" }}>
-            {formatTime(request.scheduled_at)}
-          </span>
-        </div>
-
-        <div style={{ display: "flex", gap: 8 }}>
-          {isOwn ? (
-            <button
-              onClick={() => onCancel(request.id)}
-              style={{
-                padding: "8px 16px", borderRadius: 8,
-                border: "1px solid rgba(224,82,82,0.2)",
-                background: "rgba(224,82,82,0.06)",
-                color: "rgba(224,82,82,0.7)",
-                fontSize: 13, fontFamily: "'DM Sans', sans-serif",
-                cursor: "pointer", transition: "all 0.15s",
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(224,82,82,0.4)"; e.currentTarget.style.color = "#e05252" }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(224,82,82,0.2)"; e.currentTarget.style.color = "rgba(224,82,82,0.7)" }}
-            >
-              Cancel
-            </button>
-          ) : (
-            <button
-              onClick={() => onJoin(request.id)}
-              disabled={isJoining}
-              style={{
-                padding: "8px 20px", borderRadius: 8,
-                background: isJoining ? "var(--bg-2)" : "var(--neon)",
-                border: "none",
-                color: isJoining ? "var(--text-muted)" : "#0d1008",
-                fontSize: 13, fontWeight: 700, fontFamily: "'Syne', sans-serif",
-                cursor: isJoining ? "not-allowed" : "pointer",
-                transition: "all 0.15s",
-                display: "flex", alignItems: "center", gap: 6,
-              }}
-            >
-              {isJoining ? (
-                <>
-                  <div style={{
-                    width: 12, height: 12, borderRadius: "50%",
-                    border: "2px solid var(--text-muted)", borderTopColor: "transparent",
-                    animation: "spin-slow 0.8s linear infinite",
-                  }}/>
-                  Joining...
-                </>
-              ) : (
-                <>
-                  Begin Interview
-                  <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </>
-              )}
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function RequestForm({ onSubmit, onClose, submitting }) {
-  const [topic, setTopic] = useState("")
-  const [description, setDescription] = useState("")
-  const [scheduledAt, setScheduledAt] = useState("")
-
-  const handleSubmit = () => {
-    if (!topic.trim()) return
-    onSubmit({ topic, description, scheduled_at: scheduledAt ? new Date(scheduledAt).toISOString() : "" })
+function StatusBadge({ status }) {
+  const map = {
+    open:        { label: "Open",        bg: "rgba(181,242,61,0.1)",  color: "#b5f23d",  border: "rgba(181,242,61,0.25)", dot: "#b5f23d" },
+    matched:     { label: "Matched",     bg: "rgba(74,158,245,0.1)",  color: "#4a9ef5",  border: "rgba(74,158,245,0.25)", dot: "#4a9ef5" },
+    in_progress: { label: "In Progress", bg: "rgba(240,168,48,0.1)",  color: "#f0a830",  border: "rgba(240,168,48,0.25)", dot: "#f0a830" },
+    completed:   { label: "Completed",   bg: "rgba(61,186,122,0.1)",  color: "#3dba7a",  border: "rgba(61,186,122,0.25)", dot: "#3dba7a" },
   }
-
+  const s = map[status] || map.open
   return (
-    <div style={{
-      position: "fixed", inset: 0, zIndex: 100,
-      background: "rgba(0,0,0,0.6)", backdropFilter: "blur(8px)",
-      display: "flex", alignItems: "center", justifyContent: "center",
-      padding: 20,
-      animation: "fadeIn 0.2s ease",
+    <span style={{
+      padding: "3px 10px", borderRadius: 99, fontSize: 11, fontWeight: 700,
+      fontFamily: "'Syne', sans-serif", letterSpacing: "0.5px",
+      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
+      display: "inline-flex", alignItems: "center", gap: 5,
     }}>
-      <div style={{
-        background: "var(--bg-card)",
-        border: "1px solid var(--border)",
-        borderRadius: 24, padding: "32px",
-        width: "100%", maxWidth: 520,
-        boxShadow: "0 24px 80px rgba(0,0,0,0.4)",
-        animation: "slideUp 0.25s cubic-bezier(0.34,1.56,0.64,1)",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-              <div style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--neon)", boxShadow: "0 0 8px var(--neon-glow)" }}/>
-              <span style={{ fontSize: 10, fontWeight: 700, color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif", letterSpacing: "1.5px", textTransform: "uppercase" }}>
-                New Request
-              </span>
-            </div>
-            <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 22 }}>
-              Request a Mock Interview
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            style={{
-              width: 36, height: 36, borderRadius: "50%",
-              border: "1px solid var(--border)",
-              background: "var(--bg-2)", color: "var(--text-muted)",
-              cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all 0.15s",
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--text-muted)" }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)" }}
-          >
-            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "0.5px", marginBottom: 8, textTransform: "uppercase" }}>
-              Topic *
-            </label>
-            <input
-              value={topic}
-              onChange={e => setTopic(e.target.value)}
-              placeholder="e.g. React, System Design, Data Structures..."
-              style={{
-                width: "100%", padding: "11px 14px", borderRadius: 10,
-                background: "var(--bg-2)", border: "1px solid var(--border)",
-                color: "var(--text-primary)", fontSize: 14,
-                fontFamily: "'DM Sans', sans-serif",
-                outline: "none", transition: "border-color 0.15s",
-                boxSizing: "border-box",
-              }}
-              onFocus={e => e.target.style.borderColor = "var(--neon)"}
-              onBlur={e => e.target.style.borderColor = "var(--border)"}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "0.5px", marginBottom: 8, textTransform: "uppercase" }}>
-              Description
-            </label>
-            <textarea
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder="What specific areas do you want to practice? What's your experience level?"
-              rows={3}
-              style={{
-                width: "100%", padding: "11px 14px", borderRadius: 10,
-                background: "var(--bg-2)", border: "1px solid var(--border)",
-                color: "var(--text-primary)", fontSize: 14,
-                fontFamily: "'DM Sans', sans-serif",
-                outline: "none", resize: "vertical", lineHeight: 1.6,
-                transition: "border-color 0.15s",
-                boxSizing: "border-box",
-              }}
-              onFocus={e => e.target.style.borderColor = "var(--neon)"}
-              onBlur={e => e.target.style.borderColor = "var(--border)"}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "0.5px", marginBottom: 8, textTransform: "uppercase" }}>
-              Preferred Time
-            </label>
-            <input
-              type="datetime-local"
-              value={scheduledAt}
-              onChange={e => setScheduledAt(e.target.value)}
-              style={{
-                width: "100%", padding: "11px 14px", borderRadius: 10,
-                background: "var(--bg-2)", border: "1px solid var(--border)",
-                color: "var(--text-primary)", fontSize: 14,
-                fontFamily: "'DM Sans', sans-serif",
-                outline: "none", transition: "border-color 0.15s",
-                boxSizing: "border-box",
-              }}
-              onFocus={e => e.target.style.borderColor = "var(--neon)"}
-              onBlur={e => e.target.style.borderColor = "var(--border)"}
-            />
-          </div>
-
-          {/* Google Meet info */}
-          <div style={{
-            padding: "14px 16px", borderRadius: 12,
-            background: "rgba(74,158,245,0.06)",
-            border: "1px solid rgba(74,158,245,0.15)",
-            display: "flex", gap: 10, alignItems: "flex-start",
-          }}>
-            <div style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }}>📹</div>
-            <div>
-              <p style={{ fontSize: 12, fontWeight: 700, color: "rgba(74,158,245,0.9)", fontFamily: "'Syne', sans-serif", marginBottom: 3 }}>
-                Google Meet Link
-              </p>
-              <p style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.5, fontFamily: "'DM Sans', sans-serif" }}>
-                Once matched, you'll get a Google Meet link to conduct the interview. The AI questions will run alongside your video call.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            disabled={!topic.trim() || submitting}
-            style={{
-              padding: "13px", borderRadius: 10,
-              background: topic.trim() && !submitting ? "var(--neon)" : "var(--bg-2)",
-              border: "none",
-              color: topic.trim() && !submitting ? "#0d1008" : "var(--text-muted)",
-              fontSize: 15, fontWeight: 700, fontFamily: "'Syne', sans-serif",
-              cursor: topic.trim() && !submitting ? "pointer" : "not-allowed",
-              transition: "all 0.2s",
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            }}
-          >
-            {submitting ? (
-              <>
-                <div style={{ width: 14, height: 14, borderRadius: "50%", border: "2px solid var(--text-muted)", borderTopColor: "transparent", animation: "spin-slow 0.8s linear infinite" }}/>
-                Posting...
-              </>
-            ) : "Post Request"}
-          </button>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px) scale(0.96); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
-    </div>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot, display: "inline-block" }} />
+      {s.label}
+    </span>
   )
 }
+
+const TOPIC_ICONS = {
+  react: "⚛️", python: "🐍", javascript: "💛", java: "☕", system: "🏗️",
+  ml: "🤖", ai: "🤖", data: "📊", cloud: "☁️", devops: "⚙️",
+  css: "🎨", design: "🎨", node: "🟢", go: "🐹", rust: "🦀",
+  default: "🎤"
+}
+
+
 
 export default function MockInterviewsPage() {
   const router = useRouter()
-  const [requests, setRequests] = useState([])
+  const [interviews, setInterviews] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [joiningId, setJoiningId] = useState(null)
-  const [error, setError] = useState("")
+  const [joiningID, setJoiningID] = useState(null)
+  const [currentUserID, setCurrentUserID] = useState(null)
 
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : ""
+  const [form, setForm] = useState({
+    topic: "", description: "", question_count: 5, scheduled_at: "",
+  })
 
-  const loadRequests = async () => {
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) return
     try {
-      const res = await fetch(`${API}/mock-interviews`, {
+      const payload = JSON.parse(atob(token.split(".")[1]))
+      setCurrentUserID(payload.user_id)
+    } catch {}
+    fetchInterviews()
+  }, [])
+
+  const fetchInterviews = async () => {
+    const token = localStorage.getItem("token")
+    try {
+      const res = await fetch("http://localhost:8080/mock-interviews", {
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await res.json()
-      setRequests(Array.isArray(data) ? data : [])
-    } catch {
-      setRequests([])
-    } finally {
-      setLoading(false)
-    }
+      setInterviews(Array.isArray(data) ? data : [])
+    } catch {}
+    setLoading(false)
   }
 
-  useEffect(() => {
-    loadRequests()
-    const interval = setInterval(loadRequests, 10000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleSubmit = async (formData) => {
+  const handleCreate = async () => {
+    if (!form.topic.trim()) return
     setSubmitting(true)
-    setError("")
+    const token = localStorage.getItem("token")
     try {
-      const res = await fetch(`${API}/mock-interviews`, {
+      const res = await fetch("http://localhost:8080/mock-interviews", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          ...form,
+          question_count: parseInt(form.question_count),
+          scheduled_at: form.scheduled_at ? new Date(form.scheduled_at).toISOString() : new Date().toISOString(),
+        }),
       })
-      const data = await res.json()
-      if (data.error) {
-        setError(data.error)
-      } else {
+      if (res.ok) {
         setShowForm(false)
-        await loadRequests()
+        setForm({ topic: "", description: "", question_count: 5, scheduled_at: "" })
+        fetchInterviews()
       }
-    } catch {
-      setError("Something went wrong. Please try again.")
-    } finally {
-      setSubmitting(false)
-    }
+    } catch {}
+    setSubmitting(false)
   }
 
   const handleJoin = async (id) => {
-    setJoiningId(id)
-    setError("")
+    setJoiningID(id)
+    const token = localStorage.getItem("token")
     try {
-      const res = await fetch(`${API}/mock-interviews/${id}/join`, {
+      const res = await fetch(`http://localhost:8080/mock-interviews/${id}/join`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await res.json()
-      if (data.error) {
-        setError(data.error)
-      } else {
-        // Redirect to interview room
-        router.push(`/mock-interviews/session/${data.room_code}`)
-      }
-    } catch {
-      setError("Failed to join. Please try again.")
-    } finally {
-      setJoiningId(null)
-    }
-  }
-
-  const handleCancel = async (id) => {
-    try {
-      await fetch(`${API}/mock-interviews/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      await loadRequests()
+      if (res.ok) router.push(`/mock-interviews/${id}`)
+      else alert(data.error || "Failed to join")
     } catch {}
+    setJoiningID(null)
   }
 
-  const myRequests = requests.filter(r => r.is_own)
-  const otherRequests = requests.filter(r => !r.is_own)
+  const handleEnter = (id) => router.push(`/mock-interviews/${id}`)
+
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("token")
+    await fetch(`http://localhost:8080/mock-interviews/${id}`, {
+      method: "DELETE", headers: { Authorization: `Bearer ${token}` },
+    })
+    fetchInterviews()
+  }
+
+  const myInterviews = interviews.filter(i => i.requester_id === currentUserID || i.responder_id === currentUserID)
+  const openInterviews = interviews.filter(i => i.status === "open" && i.requester_id !== currentUserID)
 
   return (
     <SidebarLayout>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <style>{`
+        .interview-card:hover { border-color: var(--border-strong) !important; transform: translateY(-2px); box-shadow: var(--shadow-lg) !important; }
+        .score-btn { transition: all 0.15s ease; }
+        .score-btn:hover { transform: scale(1.1); }
+      `}</style>
 
-        {/* Header */}
+      <div style={{ maxWidth: 920, margin: "0 auto" }}>
+
+        {/* Hero Header */}
         <div style={{ marginBottom: 36 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-            <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--neon)", boxShadow: "0 0 8px var(--neon-glow)", animation: "pulse-neon 2s infinite" }}/>
-            <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif" }}>
-              Peer Practice
-            </span>
-          </div>
-          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 20 }}>
             <div>
-              <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "clamp(28px, 4vw, 38px)", marginBottom: 8 }}>
-                Mock Interviews
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--neon)", boxShadow: "0 0 8px var(--neon-glow)", animation: "pulse-neon 2s infinite" }} />
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase", color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif" }}>
+                  Mock Interviews
+                </span>
+              </div>
+              <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "clamp(26px, 3vw, 38px)", color: "var(--text-primary)", lineHeight: 1.1, marginBottom: 8 }}>
+                Practice Interviews
               </h1>
-              <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.6, maxWidth: 520 }}>
-                Practice with real people. One person interviews while the other answers — then you switch. AI generates the questions.
+              <p style={{ color: "var(--text-secondary)", fontSize: 14, maxWidth: 480 }}>
+                Sharpen your skills with AI-powered peer mock interviews. Request a session or join an open one.
               </p>
             </div>
             <button
               onClick={() => setShowForm(true)}
-              style={{
-                display: "flex", alignItems: "center", gap: 8,
-                padding: "12px 22px", borderRadius: 10,
-                background: "var(--neon)", border: "none",
-                color: "#0d1008", fontWeight: 700,
-                fontFamily: "'Syne', sans-serif", fontSize: 14,
-                cursor: "pointer", transition: "all 0.2s",
-                boxShadow: "0 4px 16px rgba(181,242,61,0.25)",
-                flexShrink: 0,
-              }}
-              onMouseEnter={e => e.currentTarget.style.boxShadow = "0 6px 24px rgba(181,242,61,0.4)"}
-              onMouseLeave={e => e.currentTarget.style.boxShadow = "0 4px 16px rgba(181,242,61,0.25)"}
+              className="btn-neon"
+              style={{ padding: "13px 24px", borderRadius: 12, fontSize: 14, display: "flex", alignItems: "center", gap: 8, flexShrink: 0, whiteSpace: "nowrap" }}
             >
-              <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path d="M12 5v14M5 12h14"/>
               </svg>
               New Request
             </button>
           </div>
+
+          {/* Stats bar */}
+          {!loading && (
+            <div style={{ display: "flex", gap: 12, marginTop: 24, flexWrap: "wrap" }}>
+              {[
+                { label: "My Sessions", value: myInterviews.length, icon: "👤", color: "var(--neon)" },
+                { label: "Open Requests", value: openInterviews.length, icon: "🔓", color: "#4a9ef5" },
+                { label: "Completed", value: interviews.filter(i => i.status === "completed" && (i.requester_id === currentUserID || i.responder_id === currentUserID)).length, icon: "✅", color: "#3dba7a" },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "10px 16px", borderRadius: 12,
+                  background: "var(--bg-card)", border: "1px solid var(--border)",
+                  boxShadow: "var(--shadow)",
+                }}>
+                  <span style={{ fontSize: 18 }}>{s.icon}</span>
+                  <div>
+                    <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 18, color: s.color, lineHeight: 1 }}>{s.value}</div>
+                    <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 2 }}>{s.label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Error banner */}
-        {error && (
-          <div style={{
-            padding: "12px 16px", borderRadius: 10, marginBottom: 20,
-            background: "rgba(224,82,82,0.08)",
-            border: "1px solid rgba(224,82,82,0.2)",
-            color: "#e05252", fontSize: 14,
-            fontFamily: "'DM Sans', sans-serif",
-            display: "flex", alignItems: "center", gap: 8,
-          }}>
-            <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 8v4M12 16h.01"/>
-            </svg>
-            {error}
-          </div>
-        )}
-
-        {/* How it works */}
-        <div style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: 20, padding: "20px 24px",
-          marginBottom: 28,
-          display: "flex", gap: 24, flexWrap: "wrap",
-        }}>
-          {[
-            { step: "01", icon: "📝", title: "Post a request", desc: "Set your topic, description and preferred time" },
-            { step: "02", icon: "🤝", title: "Someone joins", desc: "Another user accepts and you're matched" },
-            { step: "03", icon: "🎤", title: "Interview each other", desc: "AI generates questions — switch roles after 10 questions" },
-            { step: "04", icon: "📊", title: "See your scores", desc: "Get rated 1-10 per question, see total results" },
-          ].map((s, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, flex: "1 1 180px", minWidth: 0 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                background: "var(--bg-2)", border: "1px solid var(--border)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 18,
-              }}>
-                {s.icon}
+        {/* Modal */}
+        {showForm && (
+          <div style={{ position: "fixed", inset: 0, zIndex: 200, background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+            <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 24, padding: "36px 32px", width: "100%", maxWidth: 540, boxShadow: "var(--shadow-lg)", animation: "fadeIn 0.2s ease" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
+                <div>
+                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 4 }}>New Interview Request</h2>
+                  <p style={{ fontSize: 13, color: "var(--text-muted)" }}>Set up your mock interview session</p>
+                </div>
+                <button onClick={() => setShowForm(false)} style={{ width: 32, height: 32, borderRadius: 8, background: "var(--bg-2)", border: "1px solid var(--border)", cursor: "pointer", color: "var(--text-muted)", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
               </div>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ fontSize: 10, fontWeight: 700, color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif", letterSpacing: "0.5px", marginBottom: 2 }}>
-                  STEP {s.step}
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Topic *</label>
+                  <input className="input-field" placeholder="e.g. React Hooks, System Design, Python..." value={form.topic} onChange={e => setForm(f => ({ ...f, topic: e.target.value }))} />
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)", fontFamily: "'Syne', sans-serif", marginBottom: 1 }}>
-                  {s.title}
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Description</label>
+                  <textarea className="input-field" placeholder="What specific areas should the interview focus on?" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} style={{ resize: "vertical" }} />
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'DM Sans', sans-serif", lineHeight: 1.4 }}>
-                  {s.desc}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Questions Each</label>
+                    <select className="input-field" value={form.question_count} onChange={e => setForm(f => ({ ...f, question_count: e.target.value }))}>
+                      {[3, 5, 7, 10].map(n => <option key={n} value={n}>{n} questions</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif", letterSpacing: "1px", textTransform: "uppercase", display: "block", marginBottom: 8 }}>Schedule</label>
+                    <input className="input-field" type="datetime-local" value={form.scheduled_at} onChange={e => setForm(f => ({ ...f, scheduled_at: e.target.value }))} />
+                  </div>
+                </div>
+
+                {/* Preview */}
+                {form.topic && (
+                  <div style={{ padding: "12px 14px", borderRadius: 10, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontSize: 22 }}>{getTopicIcon(form.topic)}</span>
+                    <div>
+                      <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 14, color: "var(--neon-dim)" }}>{form.topic}</div>
+                      <div style={{ fontSize: 12, color: "var(--text-muted)" }}>{form.question_count} questions each side</div>
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", gap: 12, marginTop: 4 }}>
+                  <button onClick={() => setShowForm(false)} style={{ flex: 1, padding: "13px", borderRadius: 12, border: "1px solid var(--border)", background: "transparent", color: "var(--text-secondary)", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 600, fontSize: 14 }}>
+                    Cancel
+                  </button>
+                  <button onClick={handleCreate} disabled={!form.topic.trim() || submitting} className="btn-neon" style={{ flex: 2, padding: "13px", borderRadius: 12, fontSize: 14 }}>
+                    {submitting ? "Creating..." : "Create Request →"}
+                  </button>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         {loading ? (
-          <div style={{ display: "flex", justifyContent: "center", padding: 60 }}>
-            <div style={{
-              width: 40, height: 40, borderRadius: "50%",
-              border: "3px solid var(--neon-subtle)", borderTopColor: "var(--neon)",
-              animation: "spin-slow 1s linear infinite",
-            }}/>
+          <div style={{ display: "flex", justifyContent: "center", padding: 80 }}>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", border: "3px solid var(--neon-subtle)", borderTopColor: "var(--neon)", animation: "spin-slow 1s linear infinite" }} />
           </div>
         ) : (
           <>
-            {/* My requests */}
-            {myRequests.length > 0 && (
-              <div style={{ marginBottom: 32 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                  <div className="section-dot"/>
-                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 17 }}>
-                    Your Requests
-                  </h2>
-                  <span style={{
-                    padding: "2px 8px", borderRadius: 99,
-                    background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)",
-                    fontSize: 11, fontWeight: 700, color: "var(--neon-dim)",
-                    fontFamily: "'Syne', sans-serif",
-                  }}>
-                    {myRequests.length}
+            {/* My Interviews */}
+            {myInterviews.length > 0 && (
+              <div style={{ marginBottom: 40 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+                  <div className="section-dot" />
+                  <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 18 }}>My Interviews</h2>
+                  <span style={{ padding: "2px 8px", borderRadius: 99, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", fontSize: 11, fontWeight: 700, color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif" }}>
+                    {myInterviews.length}
                   </span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
-                  {myRequests.map(r => (
-                    <RequestCard key={r.id} request={r} onJoin={handleJoin} onCancel={handleCancel} joiningId={joiningId}/>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {myInterviews.map(iv => (
+                    <InterviewCard key={iv.id} interview={iv} currentUserID={currentUserID} onJoin={handleJoin} onEnter={handleEnter} onDelete={handleDelete} joiningID={joiningID} />
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Other requests */}
+            {/* Open Requests */}
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-                <div className="section-dot"/>
-                <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 17 }}>
-                  Open Requests
-                </h2>
-                <span style={{
-                  padding: "2px 8px", borderRadius: 99,
-                  background: "var(--bg-2)", border: "1px solid var(--border)",
-                  fontSize: 11, fontWeight: 700, color: "var(--text-muted)",
-                  fontFamily: "'Syne', sans-serif",
-                }}>
-                  {otherRequests.length}
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
+                <div className="section-dot" />
+                <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 18 }}>Open Requests</h2>
+                <span style={{ padding: "2px 8px", borderRadius: 99, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", fontSize: 11, fontWeight: 700, color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif" }}>
+                  {openInterviews.length}
                 </span>
               </div>
 
-              {otherRequests.length === 0 ? (
-                <div style={{
-                  background: "var(--bg-card)",
-                  border: "2px dashed var(--border)",
-                  borderRadius: 20, padding: "48px",
-                  display: "flex", flexDirection: "column", alignItems: "center",
-                  gap: 16, textAlign: "center",
-                }}>
-                  <div style={{ fontSize: 48 }}>🎤</div>
-                  <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 18 }}>
-                    No open requests yet
-                  </h3>
-                  <p style={{ color: "var(--text-muted)", maxWidth: 360, lineHeight: 1.6 }}>
-                    Be the first to post a mock interview request. Others will be able to join and practice with you.
-                  </p>
-                  <button
-                    onClick={() => setShowForm(true)}
-                    className="btn-neon"
-                    style={{ padding: "12px 28px", borderRadius: 10, fontSize: 15 }}
-                  >
-                    Post a Request
+              {openInterviews.length === 0 ? (
+                <div style={{ background: "var(--bg-card)", border: "2px dashed var(--border)", borderRadius: 24, padding: "56px 32px", display: "flex", flexDirection: "column", alignItems: "center", gap: 16, textAlign: "center" }}>
+                  <div style={{ width: 72, height: 72, borderRadius: 20, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36 }}>🎤</div>
+                  <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20 }}>No open requests yet</h3>
+                  <p style={{ color: "var(--text-muted)", fontSize: 14, maxWidth: 360, lineHeight: 1.6 }}>Be the first! Create a mock interview request and get matched with a peer to practice with.</p>
+                  <button onClick={() => setShowForm(true)} className="btn-neon" style={{ padding: "11px 28px", borderRadius: 10, fontSize: 14 }}>
+                    Create First Request
                   </button>
                 </div>
               ) : (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
-                  {otherRequests.map(r => (
-                    <RequestCard key={r.id} request={r} onJoin={handleJoin} onCancel={handleCancel} joiningId={joiningId}/>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {openInterviews.map(iv => (
+                    <InterviewCard key={iv.id} interview={iv} currentUserID={currentUserID} onJoin={handleJoin} onEnter={handleEnter} onDelete={handleDelete} joiningID={joiningID} />
                   ))}
                 </div>
               )}
@@ -643,14 +304,99 @@ export default function MockInterviewsPage() {
           </>
         )}
       </div>
-
-      {showForm && (
-        <RequestForm
-          onSubmit={handleSubmit}
-          onClose={() => setShowForm(false)}
-          submitting={submitting}
-        />
-      )}
     </SidebarLayout>
   )
+}
+
+function InterviewCard({ interview, currentUserID, onJoin, onEnter, onDelete, joiningID }) {
+  const isRequester = interview.requester_id === currentUserID
+  const isResponder = interview.responder_id === currentUserID
+  const isParticipant = isRequester || isResponder
+  const canJoin = interview.status === "open" && !isRequester
+  const canEnter = isParticipant && (interview.status === "matched" || interview.status === "in_progress")
+  const canViewResult = isParticipant && interview.status === "completed"
+
+  return (
+    <div className="interview-card" style={{
+      background: "var(--bg-card)", border: "1px solid var(--border)",
+      borderRadius: 18, padding: "20px 24px", boxShadow: "var(--shadow)",
+      display: "flex", alignItems: "center", gap: 18, transition: "all 0.2s",
+    }}>
+      {/* Icon */}
+      <div style={{
+        width: 56, height: 56, borderRadius: 16, flexShrink: 0,
+        background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)",
+        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28,
+        position: "relative", overflow: "hidden",
+      }}>
+        {getTopicIcon(interview.topic)}
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at top right, rgba(181,242,61,0.15), transparent 70%)" }} />
+      </div>
+
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5, flexWrap: "wrap" }}>
+          <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>
+            {interview.topic}
+          </h3>
+          <StatusBadge status={interview.status} />
+        </div>
+        {interview.description && (
+          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 420 }}>
+            {interview.description}
+          </p>
+        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+            <span>👤</span>
+            <span style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              {interview.requester_name}{interview.responder_name ? ` · ${interview.responder_name}` : ""}
+            </span>
+          </span>
+          <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+            <span>❓</span> {interview.question_count} questions each
+          </span>
+          {interview.scheduled_at && (
+            <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+              <span>🕐</span> {formatDate(interview.scheduled_at)}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: "flex", gap: 8, flexShrink: 0, alignItems: "center" }}>
+        {canJoin && (
+          <button onClick={() => onJoin(interview.id)} disabled={joiningID === interview.id} className="btn-neon" style={{ padding: "9px 22px", borderRadius: 10, fontSize: 13 }}>
+            {joiningID === interview.id ? "Joining..." : "Join →"}
+          </button>
+        )}
+        {canEnter && (
+          <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(74,158,245,0.1)", border: "1px solid rgba(74,158,245,0.3)", color: "#4a9ef5", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
+            Enter Room
+          </button>
+        )}
+        {canViewResult && (
+          <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(61,186,122,0.1)", border: "1px solid rgba(61,186,122,0.3)", color: "#3dba7a", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
+            View Results
+          </button>
+        )}
+        {isRequester && interview.status === "open" && (
+          <button onClick={() => onDelete(interview.id)} style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.2)", color: "#e05252", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function getTopicIcon(topic) {
+  if (!topic) return "🎤"
+  const t = topic.toLowerCase()
+  const map = { react: "⚛️", python: "🐍", javascript: "💛", java: "☕", system: "🏗️", ml: "🤖", ai: "🤖", data: "📊", cloud: "☁️", devops: "⚙️", css: "🎨", design: "🎨", node: "🟢", go: "🐹", rust: "🦀" }
+  for (const [key, icon] of Object.entries(map)) {
+    if (t.includes(key)) return icon
+  }
+  return "🎤"
 }
