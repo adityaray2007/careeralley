@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 
 	"careeralley/models"
 
@@ -13,7 +14,9 @@ var DB *gorm.DB
 
 func ConnectDB() {
 
-	dsn := "host=localhost user=adityaray dbname=careeralley port=5432 sslmode=disable"
+	// dsn := "host=localhost user=adityaray dbname=careeralley port=5432 sslmode=disable"
+
+	dsn := os.Getenv("DATABASE_URL")
 
 	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
