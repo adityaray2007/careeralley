@@ -43,7 +43,7 @@
 
 //   const googleLogin = ()=>{
 
-//     window.location.href = "http://localhost:8080/auth/google"
+//     window.location.href = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/auth/google"
 
 //   }
 
@@ -125,6 +125,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { post } from "../../lib/api"
 import { useTheme } from "../../lib/ThemeContext"
+import SoftAurora from "../../components/SoftAurora"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -154,7 +155,7 @@ export default function LoginPage() {
   }
 
   const googleLogin = () => {
-    window.location.href = "http://localhost:8080/auth/google"
+    window.location.href = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/auth/google"
   }
 
   return (
@@ -167,12 +168,20 @@ export default function LoginPage() {
     }}>
       {/* Background effects */}
       <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-        background: theme === "dark"
-          ? "radial-gradient(ellipse at 20% 50%, rgba(181,242,61,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(143,190,42,0.04) 0%, transparent 50%)"
-          : "radial-gradient(ellipse at 20% 50%, rgba(181,242,61,0.15) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(143,190,42,0.1) 0%, transparent 50%)",
+        position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, opacity: 0.5,
         pointerEvents: "none",
-      }}/>
+      }}>
+        <SoftAurora 
+          color1="#0a0a0a" 
+          color2="#b5f23d" 
+          speed={0.4} 
+          noiseFrequency={2.5} 
+          scale={1.2} 
+          brightness={1.5}
+          bandHeight={0.4}
+          enableMouseInteraction={false}
+        />
+      </div>
 
       {/* Left panel */}
       <div style={{

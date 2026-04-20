@@ -222,7 +222,7 @@ export default function AIAssistantPage() {
 
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch("http://localhost:8080/assistant/chat", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/assistant/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -258,7 +258,7 @@ export default function AIAssistantPage() {
   const generateRoadmapFromConversation = async (conversationMessages) => {
     try {
       const token = localStorage.getItem("token")
-      const res = await fetch("http://localhost:8080/assistant/generate-roadmap", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/assistant/generate-roadmap", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -287,7 +287,7 @@ export default function AIAssistantPage() {
       const token = localStorage.getItem("token")
 
       // Save to backend using the existing flow - post to a special endpoint
-      const res = await fetch("http://localhost:8080/assistant/save-roadmap", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/assistant/save-roadmap", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

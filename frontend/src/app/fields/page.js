@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { get } from "../../lib/api"
 import SidebarLayout from "../../components/SidebarLayout"
+import BorderGlow from "../../components/BorderGlow"
+import SpotlightCard from "../../components/SpotlightCard"
 
 export default function FieldsPage() {
   const router = useRouter()
@@ -73,68 +75,72 @@ export default function FieldsPage() {
           {fields.map((field, i) => {
             const isHovered = hoveredId === field.id
             return (
-              <button
-                key={field.id}
-                onClick={() => selectField(field)}
-                onMouseEnter={() => setHoveredId(field.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                style={{
-                  background: "var(--bg-card)",
-                  border: `2px solid ${isHovered ? "var(--neon)" : "var(--border)"}`,
-                  borderRadius: 20,
-                  padding: "28px 24px",
-                  cursor: "pointer",
-                  textAlign: "left",
-                  transition: "all 0.2s ease",
-                  transform: isHovered ? "translateY(-4px)" : "translateY(0)",
-                  boxShadow: isHovered ? "0 12px 32px var(--neon-glow)" : "var(--shadow)",
-                  animation: `fadeIn 0.4s ease forwards`,
-                  animationDelay: `${i * 0.06}s`,
-                  opacity: 0,
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                {isHovered && (
-                  <div style={{
-                    position: "absolute", top: 0, right: 0, bottom: 0,
-                    width: "40%",
-                    background: "linear-gradient(90deg, transparent, rgba(181,242,61,0.04))",
-                    pointerEvents: "none",
-                  }}/>
-                )}
-                <div style={{
-                  width: 58, height: 58, borderRadius: 16,
-                  background: isHovered ? "linear-gradient(135deg, rgba(181,242,61,0.15), rgba(181,242,61,0.05))" : "var(--bg-2)",
-                  border: `1.5px solid ${isHovered ? "rgba(181,242,61,0.3)" : "var(--border)"}`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 28, marginBottom: 18,
-                  transition: "all 0.2s",
-                }}>
-                  {field.icon}
-                </div>
-                <h2 style={{
-                  fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 17,
-                  color: isHovered ? "var(--neon-dim)" : "var(--text-primary)",
-                  marginBottom: 8, transition: "color 0.2s",
-                }}>
-                  {field.name}
-                </h2>
-                <p style={{ color: "var(--text-muted)", fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
-                  {field.description}
-                </p>
-                <div style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  color: isHovered ? "var(--neon-dim)" : "var(--text-muted)",
-                  fontSize: 13, fontWeight: 600, fontFamily: "'Syne', sans-serif",
-                  transition: "color 0.2s",
-                }}>
-                  Explore careers
-                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </div>
-              </button>
+              <BorderGlow key={field.id} animated={true} borderRadius={20} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%", height: "100%" }}>
+                <SpotlightCard className="custom-spotlight" spotlightColor="rgba(181, 242, 61, 0.2)" style={{ borderRadius: 20, width: "100%", height: "100%" }}>
+                  <button
+                    onClick={() => selectField(field)}
+                    onMouseEnter={() => setHoveredId(field.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    style={{
+                      background: "transparent",
+                      border: `2px solid ${isHovered ? "var(--neon)" : "var(--border)"}`,
+                      borderRadius: 20,
+                      padding: "28px 24px",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      transition: "all 0.2s ease",
+                      boxShadow: isHovered ? "0 12px 32px var(--neon-glow)" : "var(--shadow)",
+                      animation: `fadeIn 0.4s ease forwards`,
+                      animationDelay: `${i * 0.06}s`,
+                      opacity: 0,
+                      position: "relative",
+                      overflow: "hidden",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
+                    {isHovered && (
+                      <div style={{
+                        position: "absolute", top: 0, right: 0, bottom: 0,
+                        width: "40%",
+                        background: "linear-gradient(90deg, transparent, rgba(181,242,61,0.04))",
+                        pointerEvents: "none",
+                      }}/>
+                    )}
+                    <div style={{
+                      width: 58, height: 58, borderRadius: 16,
+                      background: isHovered ? "linear-gradient(135deg, rgba(181,242,61,0.15), rgba(181,242,61,0.05))" : "var(--bg-2)",
+                      border: `1.5px solid ${isHovered ? "rgba(181,242,61,0.3)" : "var(--border)"}`,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 28, marginBottom: 18,
+                      transition: "all 0.2s",
+                    }}>
+                      {field.icon}
+                    </div>
+                    <h2 style={{
+                      fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 17,
+                      color: isHovered ? "var(--neon-dim)" : "var(--text-primary)",
+                      marginBottom: 8, transition: "color 0.2s",
+                    }}>
+                      {field.name}
+                    </h2>
+                    <p style={{ color: "var(--text-muted)", fontSize: 14, lineHeight: 1.5, marginBottom: 16 }}>
+                      {field.description}
+                    </p>
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 6,
+                      color: isHovered ? "var(--neon-dim)" : "var(--text-muted)",
+                      fontSize: 13, fontWeight: 600, fontFamily: "'Syne', sans-serif",
+                      transition: "color 0.2s",
+                    }}>
+                      Explore careers
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </div>
+                  </button>
+                </SpotlightCard>
+              </BorderGlow>
             )
           })}
         </div>

@@ -50,7 +50,7 @@ export default function InterviewRoomPage() {
   const fetchRoom = useCallback(async () => {
     const token = localStorage.getItem("token")
     try {
-      const res = await fetch(`http://localhost:8080/mock-interviews/${interviewID}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${interviewID}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await res.json()
@@ -136,7 +136,7 @@ export default function InterviewRoomPage() {
     const round = phase === "round1" ? "first" : "second"
     const token = localStorage.getItem("token")
     try {
-      const res = await fetch(`http://localhost:8080/mock-interviews/${interviewID}/generate-question`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${interviewID}/generate-question`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ round, for_user_id: intervieweeID, question_number: questionNumber }),
@@ -151,7 +151,7 @@ export default function InterviewRoomPage() {
     if (!currentQuestion || scoring) return
     setScoring(true)
     const token = localStorage.getItem("token")
-    await fetch(`http://localhost:8080/mock-interviews/${interviewID}/score`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${interviewID}/score`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       body: JSON.stringify({ question_id: currentQuestion.id, score }),
@@ -169,7 +169,7 @@ export default function InterviewRoomPage() {
 
   const completeInterview = async () => {
     const token = localStorage.getItem("token")
-    const res = await fetch(`http://localhost:8080/mock-interviews/${interviewID}/complete`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${interviewID}/complete`, {
       method: "POST", headers: { Authorization: `Bearer ${token}` },
     })
     const data = await res.json()

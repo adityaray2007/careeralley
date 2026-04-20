@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import SidebarLayout from "../../components/SidebarLayout"
+import BorderGlow from "../../components/BorderGlow"
+import SpotlightCard from "../../components/SpotlightCard"
 
 function formatDate(str) {
   if (!str) return ""
@@ -68,7 +70,7 @@ export default function MockInterviewsPage() {
   const fetchInterviews = async () => {
     const token = localStorage.getItem("token")
     try {
-      const res = await fetch("http://localhost:8080/mock-interviews", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/mock-interviews", {
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await res.json()
@@ -82,7 +84,7 @@ export default function MockInterviewsPage() {
     setSubmitting(true)
     const token = localStorage.getItem("token")
     try {
-      const res = await fetch("http://localhost:8080/mock-interviews", {
+      const res = await fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/mock-interviews", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -104,7 +106,7 @@ export default function MockInterviewsPage() {
     setJoiningID(id)
     const token = localStorage.getItem("token")
     try {
-      const res = await fetch(`http://localhost:8080/mock-interviews/${id}/join`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${id}/join`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -119,7 +121,7 @@ export default function MockInterviewsPage() {
 
   const handleDelete = async (id) => {
     const token = localStorage.getItem("token")
-    await fetch(`http://localhost:8080/mock-interviews/${id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/mock-interviews/${id}`, {
       method: "DELETE", headers: { Authorization: `Bearer ${token}` },
     })
     fetchInterviews()
@@ -131,7 +133,7 @@ export default function MockInterviewsPage() {
   return (
     <SidebarLayout>
       <style>{`
-        .interview-card:hover { border-color: var(--border-strong) !important; transform: translateY(-2px); box-shadow: var(--shadow-lg) !important; }
+        .interview-card:hover { border-color: var(--border-strong) !important; box-shadow: var(--shadow-lg) !important; }
         .score-btn { transition: all 0.15s ease; }
         .score-btn:hover { transform: scale(1.1); }
       `}</style>
@@ -317,77 +319,81 @@ function InterviewCard({ interview, currentUserID, onJoin, onEnter, onDelete, jo
   const canViewResult = isParticipant && interview.status === "completed"
 
   return (
-    <div className="interview-card" style={{
-      background: "var(--bg-card)", border: "1px solid var(--border)",
-      borderRadius: 18, padding: "20px 24px", boxShadow: "var(--shadow)",
-      display: "flex", alignItems: "center", gap: 18, transition: "all 0.2s",
-    }}>
-      {/* Icon */}
-      <div style={{
-        width: 56, height: 56, borderRadius: 16, flexShrink: 0,
-        background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)",
-        display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28,
-        position: "relative", overflow: "hidden",
-      }}>
-        {getTopicIcon(interview.topic)}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at top right, rgba(181,242,61,0.15), transparent 70%)" }} />
-      </div>
+    <BorderGlow animated={true} borderRadius={18} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%", marginBottom: 12 }}>
+      <SpotlightCard className="interview-spotlight" spotlightColor="rgba(181, 242, 61, 0.2)" style={{ borderRadius: 18, width: "100%" }}>
+        <div className="interview-card" style={{
+          background: "var(--bg-card)", border: "1px solid var(--border)",
+          borderRadius: 18, padding: "20px 24px", boxShadow: "var(--shadow)",
+          display: "flex", alignItems: "center", gap: 18, transition: "all 0.2s",
+        }}>
+          {/* Icon */}
+          <div style={{
+            width: 56, height: 56, borderRadius: 16, flexShrink: 0,
+            background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28,
+            position: "relative", overflow: "hidden",
+          }}>
+            {getTopicIcon(interview.topic)}
+            <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at top right, rgba(181,242,61,0.15), transparent 70%)" }} />
+          </div>
 
-      {/* Info */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5, flexWrap: "wrap" }}>
-          <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>
-            {interview.topic}
-          </h3>
-          <StatusBadge status={interview.status} />
-        </div>
-        {interview.description && (
-          <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 420 }}>
-            {interview.description}
-          </p>
-        )}
-        <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
-            <span>👤</span>
-            <span style={{ fontFamily: "'DM Sans', sans-serif" }}>
-              {interview.requester_name}{interview.responder_name ? ` · ${interview.responder_name}` : ""}
-            </span>
-          </span>
-          <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
-            <span>❓</span> {interview.question_count} questions each
-          </span>
-          {interview.scheduled_at && (
-            <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
-              <span>🕐</span> {formatDate(interview.scheduled_at)}
-            </span>
-          )}
-        </div>
-      </div>
+          {/* Info */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5, flexWrap: "wrap" }}>
+              <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "var(--text-primary)" }}>
+                {interview.topic}
+              </h3>
+              <StatusBadge status={interview.status} />
+            </div>
+            {interview.description && (
+              <p style={{ fontSize: 13, color: "var(--text-secondary)", marginBottom: 7, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 420 }}>
+                {interview.description}
+              </p>
+            )}
+            <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+                <span>👤</span>
+                <span style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                  {interview.requester_name}{interview.responder_name ? ` · ${interview.responder_name}` : ""}
+                </span>
+              </span>
+              <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+                <span>❓</span> {interview.question_count} questions each
+              </span>
+              {interview.scheduled_at && (
+                <span style={{ fontSize: 12, color: "var(--text-muted)", display: "flex", alignItems: "center", gap: 4 }}>
+                  <span>🕐</span> {formatDate(interview.scheduled_at)}
+                </span>
+              )}
+            </div>
+          </div>
 
-      {/* Actions */}
-      <div style={{ display: "flex", gap: 8, flexShrink: 0, alignItems: "center" }}>
-        {canJoin && (
-          <button onClick={() => onJoin(interview.id)} disabled={joiningID === interview.id} className="btn-neon" style={{ padding: "9px 22px", borderRadius: 10, fontSize: 13 }}>
-            {joiningID === interview.id ? "Joining..." : "Join →"}
-          </button>
-        )}
-        {canEnter && (
-          <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(74,158,245,0.1)", border: "1px solid rgba(74,158,245,0.3)", color: "#4a9ef5", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
-            Enter Room
-          </button>
-        )}
-        {canViewResult && (
-          <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(61,186,122,0.1)", border: "1px solid rgba(61,186,122,0.3)", color: "#3dba7a", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
-            View Results
-          </button>
-        )}
-        {isRequester && interview.status === "open" && (
-          <button onClick={() => onDelete(interview.id)} style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.2)", color: "#e05252", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
-            ✕
-          </button>
-        )}
-      </div>
-    </div>
+          {/* Actions */}
+          <div style={{ display: "flex", gap: 8, flexShrink: 0, alignItems: "center" }}>
+            {canJoin && (
+              <button onClick={() => onJoin(interview.id)} disabled={joiningID === interview.id} className="btn-neon" style={{ padding: "9px 22px", borderRadius: 10, fontSize: 13 }}>
+                {joiningID === interview.id ? "Joining..." : "Join →"}
+              </button>
+            )}
+            {canEnter && (
+              <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(74,158,245,0.1)", border: "1px solid rgba(74,158,245,0.3)", color: "#4a9ef5", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
+                Enter Room
+              </button>
+            )}
+            {canViewResult && (
+              <button onClick={() => onEnter(interview.id)} style={{ padding: "9px 20px", borderRadius: 10, fontSize: 13, background: "rgba(61,186,122,0.1)", border: "1px solid rgba(61,186,122,0.3)", color: "#3dba7a", cursor: "pointer", fontFamily: "'Syne', sans-serif", fontWeight: 700 }}>
+                View Results
+              </button>
+            )}
+            {isRequester && interview.status === "open" && (
+              <button onClick={() => onDelete(interview.id)} style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(224,82,82,0.08)", border: "1px solid rgba(224,82,82,0.2)", color: "#e05252", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </SpotlightCard>
+    </BorderGlow>
   )
 }
 

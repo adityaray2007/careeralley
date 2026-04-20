@@ -6,6 +6,7 @@ import (
 	"careeralley/utils"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -102,8 +103,14 @@ func GoogleCallback(c *gin.Context) {
 
 	jwtToken, _ := utils.GenerateToken(dbUser.ID, dbUser.Email)
 
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		frontendURL = "http://localhost:3000"
+	}
+
 	redirectURL := fmt.Sprintf(
-		"http://localhost:3000/auth-success?token=%s&onboarded=%t",
+		"%s/auth-success?token=%s&onboarded=%t",
+		frontendURL,
 		jwtToken,
 		onboarded,
 	)

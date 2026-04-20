@@ -142,6 +142,8 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { get, post } from "../../../lib/api"
 import SidebarLayout from "../../../components/SidebarLayout"
+import BorderGlow from "../../../components/BorderGlow"
+import SpotlightCard from "../../../components/SpotlightCard"
 
 export default function CardQuestionsPage() {
   const params = useParams()
@@ -348,43 +350,46 @@ const submitAnswers = async () => {
             {currentQ.options.map((opt, j) => {
               const selected = answers[currentIndex] === opt.level
               return (
-                <button
-                  key={j}
-                  onClick={() => selectOption(currentIndex, opt.level)}
-                  style={{
-                    padding: "16px 20px",
-                    borderRadius: 12,
-                    border: `2px solid ${selected ? "var(--neon)" : "var(--border)"}`,
-                    background: selected ? "var(--neon-subtle)" : "var(--bg-card)",
-                    color: selected ? "var(--neon-dim)" : "var(--text-primary)",
-                    cursor: "pointer",
-                    display: "flex", alignItems: "center", gap: 14,
-                    textAlign: "left", width: "100%",
-                    transition: "all 0.2s ease",
-                    boxShadow: selected ? "0 0 0 1px var(--neon), 0 4px 16px var(--neon-glow)" : "none",
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 15,
-                    fontWeight: selected ? 600 : 400,
-                  }}
-                  onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = "var(--border-strong)" }}
-                  onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = "var(--border)" }}
-                >
-                  <div style={{
-                    width: 32, height: 32, borderRadius: 8, flexShrink: 0,
-                    background: selected ? "rgba(181,242,61,0.2)" : "var(--bg-2)",
-                    border: `1.5px solid ${selected ? "var(--neon)" : "var(--border)"}`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
-                    color: selected ? "var(--neon)" : "var(--text-muted)",
-                    transition: "all 0.2s",
-                  }}>
-                    {selected ? (
-                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path d="M20 6L9 17l-5-5"/>
-                      </svg>
-                    ) : String.fromCharCode(65 + j)}
-                  </div>
-                  {opt.text}
-                </button>
+                <BorderGlow key={j} animated={true} borderRadius={12} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%" }}>
+                  <SpotlightCard className="custom-spotlight" spotlightColor="rgba(181, 242, 61, 0.2)" style={{ borderRadius: 12 }}>
+                    <button
+                      onClick={() => selectOption(currentIndex, opt.level)}
+                      style={{
+                        padding: "16px 20px",
+                        borderRadius: 12,
+                        border: `2px solid ${selected ? "var(--neon)" : "var(--border)"}`,
+                        background: selected ? "var(--neon-subtle)" : "var(--bg-card)",
+                        color: selected ? "var(--neon-dim)" : "var(--text-primary)",
+                        cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 14,
+                        textAlign: "left", width: "100%",
+                        transition: "all 0.2s ease",
+                        boxShadow: selected ? "0 0 0 1px var(--neon), 0 4px 16px var(--neon-glow)" : "none",
+                        fontFamily: "'DM Sans', sans-serif", fontSize: 15,
+                        fontWeight: selected ? 600 : 400,
+                      }}
+                      onMouseEnter={e => { if (!selected) e.currentTarget.style.borderColor = "var(--border-strong)" }}
+                      onMouseLeave={e => { if (!selected) e.currentTarget.style.borderColor = "var(--border)" }}
+                    >
+                      <div style={{
+                        width: 32, height: 32, borderRadius: 8, flexShrink: 0,
+                        background: selected ? "rgba(181,242,61,0.2)" : "var(--bg-2)",
+                        border: `1.5px solid ${selected ? "var(--neon)" : "var(--border)"}`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
+                        color: selected ? "var(--neon)" : "var(--text-muted)",
+                        transition: "all 0.2s",
+                      }}>
+                        {selected ? (
+                          <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path d="M20 6L9 17l-5-5"/>
+                          </svg>
+                        ) : String.fromCharCode(65 + j)}
+                      </div>
+                      {opt.text}
+                    </button>
+                  </SpotlightCard>
+                </BorderGlow>
               )
             })}
           </div>

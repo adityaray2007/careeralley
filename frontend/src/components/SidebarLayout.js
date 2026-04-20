@@ -2,16 +2,25 @@
 
 import { useTheme } from "../lib/ThemeContext"
 import Sidebar from "./Sidebar"
-// import Sidebar from "../Sidebar"
-// import { useTheme } from "../../lib/ThemeContext"
+import { useRouter } from "next/navigation"
 
 export default function SidebarLayout({ children }) {
   const { theme, toggleTheme } = useTheme()
+  const router = useRouter()
 
   return (
-    <div className="layout">
+    <div className="layout" style={{ position: "relative", zIndex: 1 }}>
+      <div style={{
+        position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none",
+        background: "linear-gradient(to bottom, #060606 0%, #0a0a0a 100%)",
+      }}>
+        <div style={{
+          position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)",
+          width: "100%", height: "50%", background: "radial-gradient(ellipse at 50% 0%, rgba(181,242,61,0.04) 0%, transparent 70%)"
+        }}/>
+      </div>
       <Sidebar />
-      <main className="main-content">
+      <main className="main-content" style={{ position: "relative", zIndex: 10 }}>
         {/* Top bar with theme toggle */}
         <div style={{
           position: "sticky",
@@ -26,6 +35,38 @@ export default function SidebarLayout({ children }) {
           gap: 12,
           backdropFilter: "blur(8px)",
         }}>
+          <button
+            onClick={() => router.push("/profile")}
+            style={{
+              width: 42,
+              height: 42,
+              borderRadius: "50%",
+              border: "1.5px solid var(--border-strong)",
+              background: "var(--bg-card)",
+              color: "var(--neon-dim)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+              boxShadow: "var(--shadow)",
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.borderColor = "var(--neon)"
+              e.currentTarget.style.boxShadow = "0 0 16px var(--neon-glow)"
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.borderColor = "var(--border-strong)"
+              e.currentTarget.style.boxShadow = "var(--shadow)"
+            }}
+            title="Profile"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+
           <button
             onClick={toggleTheme}
             style={{

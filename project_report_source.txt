@@ -1,0 +1,715 @@
+CAREERALLEY: NAVIGATE YOUR LEANING
+A PROJECT REPORT
+BY
+TEAM NO. 6
+
+Aditya Ray (S24CSEU1020)
+Himanshu Shakhar(S24CSEU1016)
+Prashan Mishra (S24CSEU1011)
+Aayushman Mathpati (S24CSEU1033)
+    
+                                             
+
+SUBMITTED TO
+
+SCHOOL OF COMPUTER SCIENCE ENGINEERING AND TECHNOLOGY, BENNETT UNIVERSITY
+GREATER NOIDA, 201310, UTTAR PRADESH, INDIA
+April 2026
+
+DECLARATION
+We hereby declare that the work which is being presented in the report entitled “CarrerAlley: Navigate your Learning”, is an authentic record of our own work carried out during the period from JAN, 2023 to April, 2023 at School of Computer Science and Engineering and Technology, Bennett University Greater Noida.
+The matters and the results presented in this report has not been submitted by me/us for the award of any other degree elsewhere.
+
+
+Signature of Candidate
+
+Aditya Ray 
+(Enroll. No. S24CSEU1020)
+
+Prashan Mishra
+(Enroll. No. S24CSEU1011)
+
+Aayushman Mathpati
+(Enroll. No. S24CSEU1033)
+
+              Himanshu Shekhar
+(Enroll. No. S24CSEU1016)
+                   
+
+ ACKNOWLEDGEMENT
+
+We would like to take this opportunity to express my/our deepest gratitude toour mentor, Dr.  Surender Tripathi for guiding, supporting, and helping us in every possible way. We were extremely fortunate to have him as our mentor as he provided insightful solutions to problems faced by me/us thus contributing immensely towards the completion of this capstone project. We would also like to express our deepest gratitude to VC, DEAN, HOD, faculty members and friends who helped us in successful completion of this capstone project. Any other name you can mentioned here. 
+					
+
+Signature of Candidate
+
+Aditya Ray 
+(Enroll. No. S24CSEU1020)
+
+Prashan Mishra
+(Enroll. No. S24CSEU1011)
+                                                                                                                                                         
+
+Aayushman Mathpati
+(Enroll. No. S24CSEU1033)
+
+
+                   Himanshu Shekhar
+(Enroll. No. S24CSEU1016)
+
+
+
+
+
+TABLE OF CONTENTS
+Abstarct viii
+1. INTRODUCTION      1.1 Problem Statement      1.2 Related Work    2. REQUIREMENT ANALYSIS    3. RISK ANALYSIS      3.1 AI Output Quality Risks      3.2 Interfacing Between Components Risks      3.3 Low User Engagement      3.4 Security Risks      3.5 Operational Risks      3.6 Performance Problem Risks    4. FEASIBILITY STUDY      4.1 Technical Feasibility      4.2 Economic Viability      4.3 Operational Viability      4.4 Time Viability    5. PROPOSED SOLUTION      5.1 General Approach      5.2 Personalised Learning Roadmap Generation      5.3 Dynamic Learning Using AI Assistant      5.4 Skill Acquisition Through Simulated Interviewing      5.5 Peer Learning Using Group Chat      5.6 Progress Monitoring and Dashboard Feature      5.7 System Architecture      5.8 Strengths of the Proposed System    6. SIMULATION DESIGN AND IMPLEMENTATION      6.1 Introduction      6.2 Setup of Local Development Environment      6.3 System Implementation      6.4 Simulation of System Workflow      6.5 Integration Testing      6.6 Observations During Simulation  
+   6.7 Result of Implementation    7. RESULT COMPARISON AND ANALYSIS      7.1 Introduction      7.2 Comparison Parameters      7.3 Comparison with Other Systems      7.4 Static Roadmap System      7.5 AI-Based Recommendation System      7.6 Platforms for Problem Solving      7.7 Interactive Platforms      7.8 Analysis of Results      7.9 Increased Efficiency of Learning      7.10 Personalised Approach to Learning      7.11 Higher Levels of Interaction      7.12 Preparedness for Life Situations      7.13 Holistic Learning System      7.14 Notable Outcomes      7.15 Limitations Observed      7.16 Conclusion of Analysis    8. LEARNING OUTCOMES      8.1 Knowledge About Full Stack Development      8.2 Relational Database Design and Management      8.3 Implementation of Authentication Systems      8.4 Integration of Artificial Intelligence      8.5 System Design and Architecture      8.6 Implementation of Real-World Features (AI Writing Tools, Plagiarism Checker)      8.7 Problem Solving and Debugging Abilities      8.8 User Experience and Interface Design      8.9 Project Management and Implementation      8.10 Learning About Real-World Software Development    9. CONCLUSION WITH CHALLENGES  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LIST OF TABLES
+Table	Page
+Table 1: Goal and Objectives	2
+Table 2: Sample 2	3
+Table 3: Sample 3	4
+Table 4: Sample 4	4
+Table 5: Sample 4	5
+Table 6: Sample 6	5
+Table 7: Regularly Scheduled Meetings	6
+Table 8: Information To Be Shared Within Our Group	6
+Table 9: Information To Be Provided To Other Groups	6
+Table 10: Information Needed From Other Groups	7
+Table 11: Deliverables	7
+Table 12: Sample 12	8
+
+LIST OF FIGURES
+Figure	Page
+Figure 1: Sample use-case diagram	9
+Figure 2: sample 2	11
+Figure 3: sample 3	12
+Figure 4: Sample 4	13
+Figure 5: Sample 5	13
+Figure 6: Sample 6	14
+
+LIST OF ABBREVIATIONS
+Abbreviation	Explanation of the Abbreviation
+AAA						Authentication Authorization and Access Control	
+CSP						Cloud Service Provider
+DNS                                                                Domain Name System
+IAM                                                                Identity and Access Management
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ABSTRACT
+
+Since the introduction of digital learning systems, the emergence of learning materials without structure has led to the feeling of being swamped by students. While not being a scarcity of information, many students struggle with determining which topics they need to learn, at what pace they can move ahead, and the benefit of the accumulated knowledge to their career development. In the absence of guidance, inefficiency, inconsistency, and demotivation among learners are inevitable. Keeping this in mind, the introduction of Careeralley: Navigate Your Learning is recommended as a roadmap generator for learning that is both intelligent and learner-focused.
+ 
+Careeralley is a web-based application that uses artificial intelligence to design personalized roadmaps for the learners using the system. The first step involves the authentication of users who then have to make some relevant inputs concerning their interests and areas of specialization. After getting such inputs, the users are categorized according to their expertise, ranging from beginners, intermediates, to experts. After the analysis, a roadmap including several topics and sub-topics, timeline, and learning material is generated. Since the introduction of digital learning systems, the emergence of learning materials without structure has led to the feeling of being swamped by students. While not being a scarcity of information, many students struggle with determining which topics they need to learn, at what pace they can move ahead, and the benefit of the accumulated knowledge to their career development. In the absence of guidance, inefficiency, inconsistency, and demotivation among learners are inevitable. Keeping this in mind, the introduction of Careeralley: Navigate Your Learning is recommended as a roadmap generator for learning that is both intelligent and learner-focused.
+ 
+Careeralley is a web-based application that uses artificial intelligence to design personalized roadmaps for the learners using the system. The first step involves the authentication of users who then have to make some relevant inputs concerning their interests and areas of specialization. After getting such inputs, the users are categorized according to their expertise, ranging from beginners, intermediates, to experts. After the analysis, a roadmap including several topics and sub-topics, timeline, and learning material is generated.
+
+INTRODUCTION
+
+With the advent of the internet age, the acquisition of information has never been more straightforward. The rapid development of online learning platforms means that there is now plenty of information and educational materials for learners to choose from. Nevertheless, this easy access to information presents another obstacle – namely, the absence of systematic learning processes. There are many students who have problems understanding what subjects to learn first and in which order. Therefore, they proceed with learning at random, which is inefficient.
+ 
+Conventional modes of learning such as schools and online training programs tend to follow a rigid curriculum that is not tailored to the learners’ requirements. However, while self-learning systems offer a flexible approach, they do not provide adequate guidance and personalization. There is a considerable disconnect between resources and learning results. Besides just acquiring information, students require direction, practical experience, and constant mentorship to realize their objectives.
+ 
+In order to solve these problems, a project called “Careeralley: Navigate Your Learning” has been proposed for use as a learning platform equipped with intelligent capabilities. The main goal of this project is to offer users a personalized experience for their learning process based on their own objectives and skills. By applying AI and advanced web techniques, Careeralley aims to fill the void between unstructured learning and career guidance.
+ 
+The system starts with an easy-to-use process of authenticating users and onboarding them, during which the user is required to enter his/her details such as areas of interest, objectives, and expertise level. With the aid of this data, the system creates a personalized curriculum for the user, which covers everything from subjects and sub-topics to time frame and sources.
+ 
+Apart from personalized roadmaps, some additional features that have been included in the application by Careeralley include the following. First, there is an AI assistant that helps users create roadmaps using unique queries, which makes the platform very flexible.First, the platform also includes the mock interview feature, which helps in simulating the actual environment for interviews to help individuals gain experience from those scenarios. Apart from the above, the platform has a feature called a chat room, where those individuals who have similar goals can discuss and resolve the problems faced by them related to the subject matter.
+ 
+Coming to the usability aspect of the platform, it should be mentioned that the platform has a good interface design, including both dark and light mode options. Furthermore, the platform gives its users information on their performance.
+ 
+Technically speaking, Careeralley is based on an effective and highly efficient architecture. Firstly, the frontend is written in Next.js and React to provide an engaging and interactive user experience. Secondly, the backend of Careeralley is designed in Spring Boot. It is responsible for handling tasks such as user authorization, implementation of business logic, and interaction with APIs. Finally, the database management system chosen to work with is PostgreSQL, which includes an effectively organized relational schema. The said structure will ensure efficient data handling of information regarding users, roadmaps, topics, and features.
+ 
+As for the significance of this project, one can claim that the idea of integrating a wide range of characteristics of learning into a single platform is truly significant. While most modern educational technologies prioritize the delivery of educational content alone, Careeralley will provide users with all the necessary resources, personalized recommendations, AI assistance, collaboration opportunities, and practical skills.
+ 
+To summarize, one may state that Careeralley is an important innovation in the field of online learning. Combining the positive attributes of traditional learning solutions with those of self-paced learning tools, the project will provide learners with a structured and intelligent tool for gaining new knowledge and skills.
+
+
+
+
+
+
+
+
+
+
+Problem Statement
+The current online education system provides learners with access to many different types of e-learning resources such as course content, tutorials, video lectures, or even documentation.However, even though all this information makes learning much more efficient and thus has a positive effect on the process itself, there arises another issue – the lack of any directions. How should students begin? What steps should they take further? Will these decisions be adequate for their future career paths?
+Among the major problems is the lack of personalization in almost all e-learning applications. The standard learning system either adheres to a standard curriculum or provides generalized suggestions that will not be tailored according to the knowledge, expertise, or experience of the learner. Consequently, those who are new to a subject might be baffled with too much information, whereas others might get bored.
+The second major problem that comes up frequently is that there is no proper path of learning available. It is often seen that most people tend to learn through different sources like YouTube videos, blogs, and forums, which might not follow a particular order. As a result of this, it becomes quite easy for the learner to lose out on important things.There are static roadmap websites available, but they do not customize themselves based on user requirements.
+In addition to difficulties associated with the acquisition of knowledge, one needs to point out the lack of readiness for application of knowledge. The majority of platforms concentrate on knowledge delivery while not offering enough chances to put this knowledge into practice through simulations like interviews. Thus, learners become prepared in theory but have no confidence in applying their skills in practice.
+At the same time, there are no collaborative spaces available on the platform where peers can communicate with each other. Even if communities are available, they are isolated from the user's learning environment.
+Another weakness is the fragmented nature of learning processes, whereby most existing systems concentrate on one type of service, either through classes, questions, or recommendations, without bringing all these elements together into an integrated system. This means that the learner has to juggle various services at once.
+Hence, what is required is a system that will: • Provide personalized learning paths • Act as an intelligent guide • Have skill acquisition features, such as interview training modules • Facilitate cooperative learning in the process of guiding the learner’s progress • Bring multiple services under one roof
+Careeralley: Navigate Your Learning, a potential solution to these problems, seeks to build on top of this foundation to develop a smart, AI-based platform that can deliver personalized learning journeys, prepare individuals for the real world, and provide a platform where learning
+Related Work
+related work Over the past decade, the scope of digital learning as well as career guidance tools has witnessed several innovations as developers have attempted to develop products that can solve issues such as accessibility, personalization, and skill development. There are quite a few tools that have partially solved problems associated with unstructured learning, but none of these can be called ideal as these fail to provide a complete solution. This project Careeralley: Navigate Your Learning, which intends to solve all these challenges, is partly based on these existing works but is aimed at overcoming their drawbacks.
+One of the biggest kinds of related technologies include MOOC platforms such as Coursera, edX, and Udemy. These are some of the best platforms where people can learn new skills through quality courses delivered by universities and experts. Although these platforms provide an organized platform to study, they are still lacking a little when it comes to providing personalized experience and structure for users. Students here are supposed to select courses themselves, and hence, they usually find it difficult to choose the correct course that will help them meet their objectives.
+Roadmap-based learning platforms such as roadmap.sh are another important category of related technologies.During the last ten years, there have been quite a few innovations related to both digital learning and career advice applications. There are many tools that are used to solve different problems connected to unstructured learning, yet none of these are considered ideal solutions as they cannot tackle the entire issue. In order to solve all the abovementioned issues, this project Careeralley: Navigate Your Learning will be created. It is somewhat inspired by these technologies but attempts to eliminate some of their weaknesses.
+Among one of the largest categories of relevant technologies we can mention MOOC platforms like Coursera, edX, and Udemy. This is one of the best websites where students can develop their skills thanks to high-quality courses delivered by university professors and other industry leaders. At the same time, they are mostly separate systems and do not work in conjunction with platforms offering progress tracking, roadmap management, and collaboration.
+Careeralley distinguishes itself from the competition by bringing the benefits of all those separate platforms together in one system. In doing so, it offers personalized learning powered by AI technology, generation of structured roadmaps, learning through collaboration within group chats, as well as actual skills acquisition through mock interviews. As opposed to MOOC learning platforms, it helps users go through their entire learning process. Instead of static roadmap generators, it is capable of adapting to users' inputs. Rather than recommendation systems, it offers goal-driven organization of learning.
+
+
+
+Requirement analysis
+Requirement analysis is the process of determining the functional and non-functional requirements of the system for ensuring its effectiveness in fulfilling users' needs.
+Functional Requirements :-
+Functional requirements describe the functionality of the system.
+ • User Authentication 
+o Users can register, login, and log out from the system. 
+o The authentication should support token session.
+ • Onboarding System 
+o The system will collect users' preferences, interests, and level of expertise. 
+o The system will determine user as a beginner, intermediate, or expert depending upon his experience.
+ • AI-based Roadmap Generation
+ o The system will create customized roadmaps according to the inputs of the users. 
+o Each roadmap will contain topics, subtopics, expected time, and resources required to cover those topics. 
+• AI-Assistant 
+o The user can enter their customized query. 
+o The system will create new roadmaps according to the queries. 
+• Mock Interview Module
+ o The system will generate questions automatically.
+ o The system will allow role switching (Interviewer/Interviewee) 
+o The system will evaluate the answer of the user and give feedback in terms of score and remarks. 
+• Group Chat System
+ o Users can join in any chat that is associated with any particular roadmap card.
+ o The real-time conversation can happen through group chats.
+ • Dashboard 
+o The system provides a dashboard which enables users to monitor their progress.
+o Completed tasks and pending tasks are shown in the dashboard2. Non-Functional Requirements
+The non-functional requirements determine how well the system performs and its quality. Performance
+ • The system should have high responsiveness to user actions.
+ • Roadmap generation using AI should be efficient. 
+• Scalability
+o The system should accommodate several users at once. o Database architecture should be scalable as data increases.
+ • Usability
+ o The system interface should be friendly to use.
+ o Light and dark theme support will improve usability. 
+• Security
+ o User data should be stored securely.
+ o Authentication tokens must be secured. 
+• Reliability 
+o The system should gracefully recover from errors. 
+o Minimal system downtime must be ensured.
+
+
+
+
+Risk Analysis
+Technical Risks
+1.AI Output Quality Risks: 
+There may be issues with generated roadmaps by the AI. 
+Mitigation: Use structured prompts and validation.
+ 2.Interfacing Between Components Risks: 
+Communication issues between frontend, backend, and the database.
+ Mitigation: 2. User Experience Risks 
+  • Complexity 
+o Risk: The application can be too complex for users to work with.
+o Mitigation: Provide clear and well-designed UI. 
+ 3.Low User Engagement
+o Risk: Users will not actively use the service. 
+o Mitigation: Implement mock interview and chat features.
+4.Security Risks 
+• Security Breach 
+o Risk: Unsecure authentication may lead to exposure of sensitive data.
+o Mitigation: Introduce secure token-based authentication. 
+• Datleak
+ o Risk: There is a possibility of a datleak in the application.
+ o Mitigation: Encrypt data using encryption technologies.
+5.Operations Risks 
+• Server Issues 
+o Risk: There can be downtime when the number of users is high. 
+o Mitigation: Reliable hosting and monitoring solutions.
+ • Service Dependencies
+ o Risk: AI APIs may not be available. 
+ o Mitigation: Build fallbacks.
+
+
+
+
+Develop proper APIs with tests: - 
+ 6 . Performance Problem Risks:
+ Slow performance while generating roadmaps and chatting with AI.
+ Mitigation: Optimize queries and logic on the backend side.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Feasibility study
+
+Feasibility study is carried out to determine the feasibility and viability of the project
+1.Technical Feasibility
+Technical feasibility can be determined through:
+ • Frontend - Through use of Next.js and React for a robust user interface. 
+• Backend - Through use of Spring Boot for an efficient API management process
+• Databases - Through use of PostgreSQL for the storing of structured and relational         data.
+ • Artificial Intelligence - Available APIs for roadmap creation.
+ The required technologies and frameworks are available and adequately documented. 
+	•	Economic Viability 
+• The development expense is low since most components are open source. 
+• There is no need for costly infrastructure at first.
+• It can be done progressively as per the growth of users.
+This project is economical and feasible for students to undertake.
+	•	Operational Viability 
+• This system is user-friendly and does not require much training.
+• The users will interact using an easy-to-use interface. 
+• The processes (signup > onboarding > roadmap > learning) are user-friendly.
+There will be high user acceptance.
+	•	Time Viability
+	•	 • This project can be done in stages: 
+o Stage 1: User authentication + onboarding
+o Stage 2: Roadmap creation 
+o Stage 3: Feature enhancements (AI tutor, mock interview, chat)Free text tool
+It is feasible for students to complete within a reasonable time.
+
+
+Proposed solution
+In order to deal with the problems mentioned above such as a lack of structure, personalization, and exposure, the proposed Careeralley: Navigate Your Learning system incorporates all of these features in an advanced AI-based platform. In this way, it is possible to create a learning environment that combines personalization, guidance, collaboration, and practical skills development into one platform.
+1.General Approach :-
+The basic idea underlying the creation of the system is turning chaotic and fragmented learning into a guided journey that is based on user’s goals and objectives. Users will not be required to perform searches and make decisions about how they will learn; they will benefit from automated decision-making processes and data structuring.
+This approach implies the following steps:
+	•	Understanding of the user through the onboarding stage
+	•	Level and interest analysis
+	•	Personalized roadmap development based on AI technology
+	•	Providing learning tools as well as collaborative and practical opportunities
+	•	Progress tracking
+This will allow users to enjoy individual learning paths tailored specifically for their needs.
+2.Personalized Learning Roadmap Generation :-
+Central to the design of this model is the personalized roadmap generation technique, which involves the use of artificial intelligence. The skill level of a user and his field of interest is determined through the information gathered about him during the onboarding process.
+The roadmap generation process follows a hierarchy as: • Roadmap > Topics > Subtopics > Resources
+Characteristics of each roadmap: • Topics are clearly defined • Subtopics are arranged in a sequential manner • Time required for completion • Difficulty levels are identified
+3.Dynamic Learning Using AI Assistant :-
+To increase the adaptability of the system, an AI assistant component has been included. In contrast to fixed systems, users can: • Provide custom queries • Suggest fresh learning routes • Explore various domains dynamically
+Roadmaps are generated by the system based on the queries provided, thus making the system dynamic.
+4.Skill Acquisition through Simulated Interviewing : -
+Existing learning systems are limited in their ability to prepare learners for practical situations. In order to overcome this drawback, a simulated interview component has been included.
+Components:
+• Dynamically created interview questions 
+• Role-playing (interviewer/interviewee) 
+• Switching roles in the same session 
+• Evaluation using grades (1-10) 
+• Review and feedback post-interview
+Benefits:
+ • Applying theory to practice
+ • Gain experience in communicating 
+• Prepare for actual interviewsAI content humanizer
+5. Peer Learning Using Group Chat :-
+Peer learning is facilitated by integrating a group chat feature with the roadmap cards, which helps users studying similar subjects exchange ideas, discuss concepts, and solve problems together. Unlike traditional chats, this feature uses a contextual mechanism to facilitate discussions related to the current stage of the process.
+6. Progress Monitoring and Dashboard Feature :-
+Progress monitoring can be achieved through a module called a dashboard, which lets users see how far they have come during their learning journey. 
+Users will be able to track: 
+• The number of topics they have covered 
+• Their current progress
+ • The pending topics to cover
+Such an approach helps keep the momentum going throughout the whole journey.
+7. System Architecture and Integration Strategy :-
+As for the integration strategy, the proposed solution involves a modular architecture in which all components work together but fulfill certain roles.
+
+
+ They include: 
+• Frontend
+ o Built with Next.js and React technologies
+ o Used for user interaction and UI creation 
+o Supports theme-based interface switching (light/dark mode)
+ • Backend 
+o Uses Spring Boot to provide authentication, logic and API communication
+o Performs roadmap generation and data processing 
+• Database 
+o Based on PostgreSQL and uses relational schema 
+o Maintains relationships between users, roadmaps, topics, and modules
+Such architecture guarantees the separation of concerns and makes the system more scalable.
+8. Strengths of the Proposed System :-
+There are a number of strengths in the proposed system that differentiate it from the current ones:
+• Customization: Personalized learning path for each individual 
+• Organization: Structured roadmap to maximize efficiency
+• Flaxibility: Possibility of changing things with the AI assistant 
+• Application: Mock interviews prepare users for reality
+• Interaction: Chat function facilitates communication between peers 
+• Comprehensive: Various functions in one place
+
+Simulation design and implementation
+1.Introduction :-
+In this chapter, we will look at how the designed model/system named 'Careeralley: Navigate Your Learning' was implemented. Specifically, it is important to note that we need to show that the simulation works properly, all the pieces are interconnected, and realistic simulations can be conducted in controlled settings.
+Each of the elements of the project was developed taking into account the latest software solutions within the scope of full-stack web application architecture. Each element was developed and tested separately prior to integrating them in a larger system.
+2. Setup of the Local Development Environment :-
+The list of configurations needed for a local development environment in our case looks as follows:
+Hardware
+• PC with a minimum of 8 GB RAM 
+• Multicore processor 
+• Internet Connection
+Software 
+• Operating System: macOS, Windows, Linux
+ • Node.js (frontend) 
+• Java (Spring Boot backend) 
+• PostgreSQL Database 
+• IDE: Visual Studio Code, IntelliJ IDEA 
+• Browser: Google Chrome, Microsoft Edge
+ 3. System Implementation :-
+System implementation was done in a modular approach where individual modules were designed separately then joined together.
+
+
+3.1 Frontend Implementation :-
+The frontend of the system was implemented using Next.js and React frameworks to provide an interactive user interface.
+Features Implemented:
+• Login and Signup form pages
+• Onboarding • Dashboard 
+• Roadmap viewer 
+• AI assistant
+• Mock interview 
+• Group chat interface 
+• Light and dark mode themes
+Methodology Used:
+ • React hooks like useState and useEffect 
+ • Sending requests to APIs using post and get utility
+ • Routing using Next.js App Router
+ • Token Management using Local StorageText analysis service
+Custom AI Development
+3.2 Backend Implementation :-
+Backend was designed using Spring Boot framework and handled all the business logics of the application while interacting with external APIs.
+Modules Implemented:
+• Authentication module 
+• Onboarding service 
+• Roadmap generator service
+
+
+ • Custom AI integration 
+• Mock interview module
+ • Chat module
+Methods Used: 
+• REST APIs 
+• Data transfer using JSON format 
+• Token-based authentication
+• Service layer to separate business logics
+3.3 Database Implementation
+Database design was implemented using PostgreSQL relational database management systems.Machine learning classifier
+Tables Implemented:
+ • users table
+ • roadmaps
+ • topics table for roadmap topics 
+ • subtopics table
+ • resources table for learning resources 
+ • user_card_answers table for onboarding data 
+ • user_progresses table 
+ • study_sessions table
+ • chat tablePlagiarism checker 
+
+
+
+
+
+4. Simulation of System Workflow :-
+To validate the system, multiple user scenarios were simulated.
+4.1 New User Flow Simulation
+	•	User signs up
+	•	Logs into the system
+	•	Completes onboarding questions
+	•	System generates a personalized roadmap
+	•	Roadmap is stored in the database
+	•	User is redirected to dashboard
+👉 This verifies: • Authentication • Onboarding • Roadmap generation
+4.2 AI Assistant Simulation
+	•	User enters a custom query
+	•	Request is sent to backend
+	•	AI generates a roadmap
+	•	Data is stored and returned
+	•	UI displays the new roadmapText analysis tools
+👉 This verifies: • AI integration • Dynamic roadmap generation
+4.3 Mock Interview Simulation
+	•	User starts mock interview
+	•	System generates questions
+	•	Role assigned randomly
+	•	User provides answers
+	•	System evaluates responses
+	•	Score and feedback displayed
+👉 This verifies: • Real-time interaction • Evaluation logic
+
+4.4 Group Chat Simulation
+	•	User joins a roadmap card
+	•	Opens chat interface
+	•	Sends messages
+	•	Messages stored in database
+	•	Other users receive updatesDocument classification API
+👉 This verifies: • Real-time communication • Data persistence
+5. Integration Testing :-
+After implementing individual modules, integration testing was performed to ensure smooth communication between components.
+Key Checks: 
+• Frontend ↔ Backend API calls 
+• Backend ↔ Database queries 
+• AI response handling 
+• Navigation flow consistency
+6. Observations During Simulation :-
+• Initial issues with authentication flow were resolved by adjusting login handling after signup 
+• Database consistency verified through query testing 
+• Performance improved by optimizing API calls • UI responsiveness ensured across different screens
+7. Result of Implementation :-
+The system successfully:
+ • Generates personalized roadmaps
+ • Supports dynamic AI-based queries 
+ • Simulates interview environments 
+ • Enables collaborative learning 
+ • Tracks user progressAI detection software
+All modules were tested under simulated conditions and performed as expected.
+The simulation and implementation of the proposed system demonstrate that Careeralley is a functional, scalable, and efficient platform capable of providing personalized and structured learning experiences.
+
+
+
+	•	Result Comparison and Analysis
+
+
+
+
+
+1. Introduction :-
+In this part, the performance and efficiency of the proposed learning tool called “Careeralley: Navigate Your Learning” will be assessed and compared with other available learning systems according to their performance and results achieved by virtue of some features implemented in the system.
+
+2. Comparison Parameters :-
+In order to make an effective comparison, the following criteria were taken into consideration: 
+• Personalization – Flexibility of the system in accordance with users' requirements
+• Structured Learning – Availability of structured learning options 
+• Practical Exposure – Opportunity for practicing acquired skills 
+• User Engagement – Level of user interaction 
+• Collaboration – Peer learning possibilities 
+• System Integration – Incorporation of various features in one system
+3. Comparison With Other Systems :-
+1- Traditional Learning Systems (MOOCs)
+These learning platforms have excellent material but follow the course-based learning approach. • Advantage:
+ o Simple course structure 
+• Disadvantage: 
+o The lack of personalized roadmap provision
+o Has no practice or interview element
+
+👉Careeralley Improvement: 
+o Provides personalized learning paths rather than course paths
+o Includes roadmap, practice, and collaboration
+
+2- Static Roadmap System
+An alternative is the static roadmap provided by roadmap.sh.
+• Advantage: 
+o Good system 
+• Disadvantage: 
+o The lack of personalization 
+o The roadmap remains the same for everyone
+👉Careeralley Improvement: 
+o The use of personalized dynamic roadmap through AI 
+o Adaptable based on the user level and goals
+
+3- AI-Based Recommendation System
+YouTube is an example of an alternative site that makes video recommendations based on user behavior.
+• Advantage:
+ o The personalization of the user interface at certain points 
+• Disadvantage:
+ o The lack of learning sequences 
+ o The randomness of the recommendation process
+
+
+👉Careeralley Improvement:
+ o The use of personalized dynamic roadmap rather than random recommendations 
+o Preservation of the learning sequence
+4- Platforms for Problem Solving
+LeetCode, HackerRank, and similar platforms focus on solving problems.
+• Pros:
+ o Appropriate for learning how to code
+ • Cons:	
+ o Lack of learning path structure 
+o Can only be used for specific subjects
+👉 Suggestions for Improvement in Careeralley: 
+• Incorporates interview questions into the learning platform 
+• Provides feedback and scores
+
+5- Interactive Platforms
+Discord, Slack, and other such platforms facilitate interaction.
+• Pros:
+ o Offers real-time interaction 
+• Cons:
+ o No association with learning path
+👉 Suggestions for Improvement in Careeralley: 
+• Conversations are topic-based (linked to roadmap cards)
+
+
+                                          ------------------------------------------                                                             IMAGE                                             -----------------------------------------  
+5- Analysis of Results
+The deployment and evaluation of Careeralley show substantial improvements from current solutions:
+1. Increased Efficiency of Learning
+A clear roadmap is available, which saves learners time in searching and planning their journey.
+
+2. Personalized Approach to Training
+The system adjusts according to: 
+• Current level of skills of users
+ • Interest of learners
+ • Dynamic queries of the users (using an AI assistant)
+It creates a personalized learning environment for all.
+
+3. Higher Levels of Interaction
+The features like: 
+• Mock interviews 
+• Group chat feature 
+• AI assistant
+ensure higher engagement among users.
+
+
+
+4. Preparedness for Real-Life Situations
+Contrary to traditional systems, Careeralley contains: 
+• Mock interviews 
+• Feedback system
+and prepares learners for real situations.
+
+5. Holistic Learning System
+Current platforms offer separate capabilities. Careeralley incorporates:
+ • Learning process
+ • Practice sessions
+ • Collaborative activities
+👉into a single system.
+
+6. Notable Outcomes
+During testing and simulation of the system: 
+• The users were successful in creating roadmaps 
+• Dynamic queries were managed by AI assistant
+• Mock interviews were beneficial to the users 
+• Chats facilitated collaboration among users
+7. Limitations Observed
+Although the system works well, there are some limitations that have been noted:
+ • The generated AI content can be inconsistent in terms of quality.
+ • The performance is influenced by the time taken to respond from the backend server.
+ • The real-time chat capability requires optimization for scalability.
+
+8. Conclusion of Analysis
+It is quite evident from the comparison and analysis performed that Careeralley surpasses traditional and current learning platforms in offering an effective and complete learning environment. This is because it combines various capabilities into one platform, unlike the fragmented methods used currently.
+
+
+7 learning Outcomes
+Careeralley: Navigate Your Learning proved to be an enriching journey, both in terms of technical knowledge gain and practical implementation across different domains of software development and systems.
+1.Knowledge About Full-Stack Development
+One of the learning outcomes was gaining practical experience in full-stack development. The project allowed learning how to develop applications at different layers by utilizing both frontend and backend technologies. 
+• On the frontend side, Next.js and React technologies have been used for creating complex web applications.
+• On the backend side, Spring Boot framework provided insights into RESTful APIs, controller service architecture, etc.
+ • Frontend-backend integration led to better understanding of interactions through APIs.
+In other words, the application has been successfully built by implementing all its layers.
+
+2.Relational Database Design and Management
+Through this project, gained a better insight into designing a database and its effective management.
+ In particular, the following knowledge was obtained:
+ • Database design 
+ • Foreign key relationships among tables
+ • Normalized database structures
+ • Query writingFree text tool
+In short, gained a better understanding about backend systems' ability to work with structured data. 3. Implementation of Authentication Systems
+
+
+As part of the project, we gained hands-on experience in designing secure authentication systems:
+ • Creation of sign-up and sign-in options
+ • Tokens based authentication • Managing sessions and local storage
+ • Maintaining state in web applications
+It became clear how crucial is a careful security design and appropriate user management in the process.
+
+4. Integration of Artificial Intelligence
+One of the key learnings was how to properly integrate AI into real-life applications.
+• Learned how to develop prompts for AI models and handle output data (roadmap generation)
+ • Added dynamic elements such as AI assistant for custom queries
+
+5. System Design and Architecture
+We learned how to design system architecture of an application.
+• Different layers of development: backend, frontend and database layer
+ • Created independent modules (auth module, roadmap module, chat module and interview module) • Figure out how all layers interact with each other
+
+6. Implementation of Real-World FeaturesAI writing tools
+In contrast to simple applications, our project required us to implement various advanced features:
+ 	• Mock interview with evaluation of results 	
+• Real group chat for collaborative study 
+• Tracking progress and creating dashboards 
+• Supporting theme changes 
+7. Problem Solving and Debugging Abilities
+In the course of the project, there have been challenges like:
+ • Solving authentication flow problems 
+ • Debugging API calls • Managing database inconsistencies 
+ • Integrating the front-end and back-end solutions properly
+This increased my problem-solving abilities and logical reasoning.
+
+8. User Experience and Interface Design
+This project helped me understand that UX is very important when developing any application.
+ • Working on navigation bar (side-bar, dashboard)
+ • Designing responsive UI 
+ • Applying thematic designs based on needs
+Thus, I learned how design plays an important role.
+
+9. Project Management and ImplementationPlagiarism checker
+The project has been implemented in many stages. This helped me learn about:
+ • Planning of large complex systems 
+ • Development workflow management 
+ • Testing and integration of various features
+Such knowledge is very helpful while dealing with large projects.
+
+10. Learning about Real-World Software Development
+The project gave me good insights about how real-world applications are developed. It included:
+ • Requirement gathering
+ • Application design 
+• Development 
+• Testing and enhancement of the system
+It helped me understand how everything comes together to make a useful and scalable application. Conclusion of Learning Outcome
+The designing of Careeralley has been an all-round learning process through which there is a perfect transition from theoretical understanding to implementation in practice. The designing has greatly increased technical competency and problem-solving capacity as well as providing great insights on how to make real world applications.
+
+
+Conclusion with challenges
+The implementation of Careeralley: Navigate Your Learning is an attempt to address the problem of ineffective unorganized and optimized learning within the digital world. The project was able to combine the essential parts of the process such as artificial intelligence, generation of roadmaps, collaboration, and practice to create a powerful tool which makes the entire procedure of learning better and more personalized.
+It is evident that the project fulfills its purpose of making the user understand how the learning process works. The inclusion of the onboarding and the AI roadmaps allows for users to enjoy personalization when it comes to studying as all features of the app are used to facilitate the process of learning. For example, such elements as an AI assistant, mock interview, and the group chat provide learners with additional practice to improve the process.
+In technical terms, the development of the full-stack web application has been done successfully. Particularly, it should be noted that the use of such technologies as Next.js for the frontend, Spring Boot for the backend, and PostgreSQL database makes the architecture of the project scalable and maintainable.
+On the other hand, there were some challenges in the process of designing and implementing the project. 
+To begin with, issues related to communication between the front-end and back-end were very common. Problems with API communication, authentication procedure, and data manipulation occurred very often. Misrouting and synchronization issues during the user registration process seemed to be particularly popular.
+Secondly, creating database relations was rather a challenging issue. In fact, relations needed to be established between tables containing information about users, roadmaps, topics, and sub-topics. This task implied profound knowledge regarding data relations. Incorrect foreign keys and wrong data orderings showed how important a proper database structure was.
+Finally, implementation of several AI features was a problem as well. Designing prompts and handling AI-generated responses appeared to be quite complicated.
+Moreover, creating more complex functions like the mock interview system and group chat system entailed working with dynamic processes and behavior. Designing and developing these elements in an efficient way demanded constant improvements to the logic of the app and UI design.
+One more difficulty lied in combining performance and usability. With numerous features introduced, it became necessary to maintain an intuitive, functional, and clear user interface despite the complexity. Theme support and consistency solved this issue but required extra work on the design side.
+Another aspect that had to be worked out was the performance. Since some functions demanded multiple API requests and interaction with AI model, improving efficiency of both backend and frontend was critical to ensuring optimal performance.
+As the result of addressing these challenges, a working version of the product was developed and properly tested. Despite being difficult tasks, all problems were resolved and improved understanding of design, debugging, and practical implementation received.
+To conclude, Careeralley is indeed an impressive solution that helps to fill in the void that exists between informal learning and professional growth. As a result of incorporating such aspects as personalization, use of AI technologies, collaboration, and tools for effective learning, we can witness the emergence of a full-fledged learning environment. Not least importantly, our project helped to develop technical and analytical skills necessary for creating software applications.
+
+

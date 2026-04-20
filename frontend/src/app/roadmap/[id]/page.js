@@ -527,6 +527,8 @@ import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { get, post } from "../../../lib/api"
 import SidebarLayout from "../../../components/SidebarLayout"
+import BorderGlow from "../../../components/BorderGlow"
+import SpotlightCard from "../../../components/SpotlightCard"
 
 export default function RoadmapPage() {
   const params = useParams()
@@ -748,169 +750,173 @@ export default function RoadmapPage() {
             const isExpanded = expandedTopics[topic.id]
 
             return (
-              <div
-                key={topic.id}
-                style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  boxShadow: "var(--shadow)",
-                  animation: `fadeIn 0.4s ease forwards`,
-                  animationDelay: `${ti * 0.06}s`,
-                  opacity: 0,
-                }}
-              >
-                {/* Topic header */}
-                <button
-                  onClick={() => toggleTopic(topic.id)}
-                  style={{
-                    width: "100%", padding: "20px 24px",
-                    background: "none", border: "none", cursor: "pointer",
-                    display: "flex", alignItems: "center", gap: 14,
-                    textAlign: "left",
-                  }}
-                >
-                  <div style={{
-                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: topicPct === 100 ? "var(--neon)" : "var(--neon-subtle)",
-                    border: `1.5px solid ${topicPct === 100 ? "var(--neon)" : "rgba(181,242,61,0.2)"}`,
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "all 0.2s",
-                  }}>
-                    {topicPct === 100 ? (
-                      <svg width="16" height="16" fill="none" stroke="#0d1008" strokeWidth="2.5" viewBox="0 0 24 24">
-                        <path d="M20 6L9 17l-5-5"/>
+              <BorderGlow key={topic.id} animated={true} borderRadius={20} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%" }}>
+                <SpotlightCard className="custom-spotlight" spotlightColor="rgba(181, 242, 61, 0.2)" style={{ borderRadius: 20, width: "100%" }}>
+                  <div
+                    style={{
+                      background: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 20,
+                      overflow: "hidden",
+                      boxShadow: "var(--shadow)",
+                      animation: `fadeIn 0.4s ease forwards`,
+                      animationDelay: `${ti * 0.06}s`,
+                      opacity: 0,
+                      width: "100%"
+                    }}
+                  >
+                    {/* Topic header */}
+                    <button
+                      onClick={() => toggleTopic(topic.id)}
+                      style={{
+                        width: "100%", padding: "20px 24px",
+                        background: "none", border: "none", cursor: "pointer",
+                        display: "flex", alignItems: "center", gap: 14,
+                        textAlign: "left",
+                      }}
+                    >
+                      <div style={{
+                        width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                        background: topicPct === 100 ? "var(--neon)" : "var(--neon-subtle)",
+                        border: `1.5px solid ${topicPct === 100 ? "var(--neon)" : "rgba(181,242,61,0.2)"}`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        transition: "all 0.2s",
+                      }}>
+                        {topicPct === 100 ? (
+                          <svg width="16" height="16" fill="none" stroke="#0d1008" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <path d="M20 6L9 17l-5-5"/>
+                          </svg>
+                        ) : (
+                          <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 13, color: "var(--neon-dim)" }}>
+                            {ti + 1}
+                          </span>
+                        )}
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "var(--text-primary)", marginBottom: 4 }}>
+                          {topic.title}
+                        </h2>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <div style={{ flex: 1, height: 3, background: "var(--border)", borderRadius: 2, maxWidth: 120 }}>
+                            <div style={{
+                              height: "100%", borderRadius: 2,
+                              width: `${topicPct}%`,
+                              background: "var(--neon)",
+                              transition: "width 0.4s ease",
+                            }}/>
+                          </div>
+                          <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif" }}>
+                            {topicCompleted}/{topicTotal}
+                          </span>
+                        </div>
+                      </div>
+
+                      <svg
+                        width="18" height="18" fill="none" stroke="var(--text-muted)" strokeWidth="2" viewBox="0 0 24 24"
+                        style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", flexShrink: 0 }}
+                      >
+                        <path d="M6 9l6 6 6-6"/>
                       </svg>
-                    ) : (
-                      <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 13, color: "var(--neon-dim)" }}>
-                        {ti + 1}
-                      </span>
+                    </button>
+
+                    {/* Subtopics */}
+                    {isExpanded && (
+                      <div style={{ borderTop: "1px solid var(--border)", padding: "12px 24px 20px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {topic.Subtopics?.map((sub) => {
+                            const isDone = completed[sub.id] || false
+                            const isStudying = activeSubtopic === sub.id
+
+                            return (
+                              <div
+                                key={sub.id}
+                                style={{
+                                  display: "flex", alignItems: "center", gap: 12,
+                                  padding: "12px 16px",
+                                  borderRadius: 12,
+                                  background: isDone ? "var(--neon-subtle)" : isStudying ? "rgba(74,158,245,0.06)" : "var(--bg-2)",
+                                  border: `1.5px solid ${isDone ? "rgba(181,242,61,0.2)" : isStudying ? "rgba(74,158,245,0.2)" : "transparent"}`,
+                                  transition: "all 0.2s",
+                                }}
+                              >
+                                {/* Checkbox */}
+                                <button
+                                  onClick={() => handleProgress(sub.id)}
+                                  style={{
+                                    width: 22, height: 22, borderRadius: 6, flexShrink: 0,
+                                    border: `2px solid ${isDone ? "var(--neon)" : "var(--border-strong)"}`,
+                                    background: isDone ? "var(--neon)" : "transparent",
+                                    cursor: "pointer",
+                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                    transition: "all 0.2s",
+                                  }}
+                                >
+                                  {isDone && (
+                                    <svg width="12" height="12" fill="none" stroke="#0d1008" strokeWidth="3" viewBox="0 0 24 24">
+                                      <path d="M20 6L9 17l-5-5"/>
+                                    </svg>
+                                  )}
+                                </button>
+
+                                {/* Title */}
+                                <span style={{
+                                  flex: 1, fontSize: 14,
+                                  color: isDone ? "var(--text-muted)" : "var(--text-primary)",
+                                  textDecoration: isDone ? "line-through" : "none",
+                                  fontFamily: "'DM Sans', sans-serif",
+                                  transition: "all 0.2s",
+                                }}>
+                                  {sub.title}
+                                </span>
+
+                                {/* Study button */}
+                                {isStudying ? (
+                                  <button
+                                    onClick={endStudy}
+                                    style={{
+                                      display: "flex", alignItems: "center", gap: 6,
+                                      padding: "6px 12px", borderRadius: 8,
+                                      background: "rgba(224,82,82,0.1)",
+                                      border: "1px solid rgba(224,82,82,0.25)",
+                                      color: "#e05252",
+                                      cursor: "pointer",
+                                      fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
+                                      transition: "all 0.2s",
+                                      animation: "pulse-neon 1.5s infinite",
+                                    }}
+                                  >
+                                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#e05252", animation: "pulse-neon 1s infinite" }}/>
+                                    Stop
+                                  </button>
+                                ) : !activeSession ? (
+                                  <button
+                                    onClick={() => startStudy(sub.id)}
+                                    style={{
+                                      display: "flex", alignItems: "center", gap: 6,
+                                      padding: "6px 12px", borderRadius: 8,
+                                      background: "var(--neon-subtle)",
+                                      border: "1px solid rgba(181,242,61,0.2)",
+                                      color: "var(--neon-dim)",
+                                      cursor: "pointer",
+                                      fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
+                                      transition: "all 0.2s",
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = "rgba(181,242,61,0.2)"}
+                                    onMouseLeave={e => e.currentTarget.style.background = "var(--neon-subtle)"}
+                                  >
+                                    ▶ Study
+                                  </button>
+                                ) : null}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
                     )}
                   </div>
-
-                  <div style={{ flex: 1 }}>
-                    <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, color: "var(--text-primary)", marginBottom: 4 }}>
-                      {topic.title}
-                    </h2>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ flex: 1, height: 3, background: "var(--border)", borderRadius: 2, maxWidth: 120 }}>
-                        <div style={{
-                          height: "100%", borderRadius: 2,
-                          width: `${topicPct}%`,
-                          background: "var(--neon)",
-                          transition: "width 0.4s ease",
-                        }}/>
-                      </div>
-                      <span style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "'Syne', sans-serif" }}>
-                        {topicCompleted}/{topicTotal}
-                      </span>
-                    </div>
-                  </div>
-
-                  <svg
-                    width="18" height="18" fill="none" stroke="var(--text-muted)" strokeWidth="2" viewBox="0 0 24 24"
-                    style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", flexShrink: 0 }}
-                  >
-                    <path d="M6 9l6 6 6-6"/>
-                  </svg>
-                </button>
-
-                {/* Subtopics */}
-                {isExpanded && (
-                  <div style={{ borderTop: "1px solid var(--border)", padding: "12px 24px 20px" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                      {topic.Subtopics?.map((sub) => {
-                        const isDone = completed[sub.id] || false
-                        const isStudying = activeSubtopic === sub.id
-
-                        return (
-                          <div
-                            key={sub.id}
-                            style={{
-                              display: "flex", alignItems: "center", gap: 12,
-                              padding: "12px 16px",
-                              borderRadius: 12,
-                              background: isDone ? "var(--neon-subtle)" : isStudying ? "rgba(74,158,245,0.06)" : "var(--bg-2)",
-                              border: `1.5px solid ${isDone ? "rgba(181,242,61,0.2)" : isStudying ? "rgba(74,158,245,0.2)" : "transparent"}`,
-                              transition: "all 0.2s",
-                            }}
-                          >
-                            {/* Checkbox */}
-                            <button
-                              onClick={() => handleProgress(sub.id)}
-                              style={{
-                                width: 22, height: 22, borderRadius: 6, flexShrink: 0,
-                                border: `2px solid ${isDone ? "var(--neon)" : "var(--border-strong)"}`,
-                                background: isDone ? "var(--neon)" : "transparent",
-                                cursor: "pointer",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                transition: "all 0.2s",
-                              }}
-                            >
-                              {isDone && (
-                                <svg width="12" height="12" fill="none" stroke="#0d1008" strokeWidth="3" viewBox="0 0 24 24">
-                                  <path d="M20 6L9 17l-5-5"/>
-                                </svg>
-                              )}
-                            </button>
-
-                            {/* Title */}
-                            <span style={{
-                              flex: 1, fontSize: 14,
-                              color: isDone ? "var(--text-muted)" : "var(--text-primary)",
-                              textDecoration: isDone ? "line-through" : "none",
-                              fontFamily: "'DM Sans', sans-serif",
-                              transition: "all 0.2s",
-                            }}>
-                              {sub.title}
-                            </span>
-
-                            {/* Study button */}
-                            {isStudying ? (
-                              <button
-                                onClick={endStudy}
-                                style={{
-                                  display: "flex", alignItems: "center", gap: 6,
-                                  padding: "6px 12px", borderRadius: 8,
-                                  background: "rgba(224,82,82,0.1)",
-                                  border: "1px solid rgba(224,82,82,0.25)",
-                                  color: "#e05252",
-                                  cursor: "pointer",
-                                  fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
-                                  transition: "all 0.2s",
-                                  animation: "pulse-neon 1.5s infinite",
-                                }}
-                              >
-                                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#e05252", animation: "pulse-neon 1s infinite" }}/>
-                                Stop
-                              </button>
-                            ) : !activeSession ? (
-                              <button
-                                onClick={() => startStudy(sub.id)}
-                                style={{
-                                  display: "flex", alignItems: "center", gap: 6,
-                                  padding: "6px 12px", borderRadius: 8,
-                                  background: "var(--neon-subtle)",
-                                  border: "1px solid rgba(181,242,61,0.2)",
-                                  color: "var(--neon-dim)",
-                                  cursor: "pointer",
-                                  fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 12,
-                                  transition: "all 0.2s",
-                                }}
-                                onMouseEnter={e => e.currentTarget.style.background = "rgba(181,242,61,0.2)"}
-                                onMouseLeave={e => e.currentTarget.style.background = "var(--neon-subtle)"}
-                              >
-                                ▶ Study
-                              </button>
-                            ) : null}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
+                </SpotlightCard>
+              </BorderGlow>
             )
           })}
         </div>

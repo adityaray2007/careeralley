@@ -16,4 +16,10 @@ type User struct {
 	CreatedAt time.Time
 
 	Onboarded bool
+
+	Bio string
+
+	CareerGoals string
+
+	CurrentRole string
 }

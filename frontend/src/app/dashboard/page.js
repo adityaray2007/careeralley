@@ -324,6 +324,8 @@ import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { get } from "../../lib/api"
 import SidebarLayout from "../../components/SidebarLayout"
+import SpotlightCard from "../../components/SpotlightCard"
+import BorderGlow from "../../components/BorderGlow"
 
 function MiniChart({ data = [], color = "#b5f23d" }) {
   const max = Math.max(...data, 1)
@@ -414,15 +416,23 @@ export default function DashboardPage() {
   const [todayTrend] = useState([10, 25, 20, 40, 35, 55, 45, 70, 65])
 
   useEffect(() => {
+    let mounted = true
     const loadDashboard = async () => {
       const token = localStorage.getItem("token")
       const data = await get("/user-dashboard", token)
-      if (data) {
+      if (data && mounted) {
         setStats({ today: data.today_minutes || 0, weekly: data.weekly_minutes || 0 })
         setCards(data.active_cards || [])
       }
     }
+    
     loadDashboard()
+    const intv = setInterval(loadDashboard, 10000)
+    
+    return () => {
+      mounted = false
+      clearInterval(intv)
+    }
   }, [])
 
   if (!stats) {
@@ -706,85 +716,74 @@ export default function DashboardPage() {
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
               {cards.map((card, i) => (
-                <div
-                  key={i}
-                  style={{
+                <BorderGlow key={i} animated={true} borderRadius={20} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%", height: "100%" }}>
+                  <SpotlightCard className="dashboard-roadmap-card" spotlightColor="rgba(181, 242, 61, 0.2)" style={{
                     background: "var(--bg-card)",
-                    border: "1px solid var(--border)",
                     borderRadius: 20, padding: "24px",
                     boxShadow: "var(--shadow)",
-                    position: "relative", overflow: "hidden",
                     animation: `fadeIn 0.4s ease forwards`,
                     animationDelay: `${i * 0.06}s`,
                     opacity: 0,
-                    transition: "all 0.2s",
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = "var(--neon)"
-                    e.currentTarget.style.transform = "translateY(-2px)"
-                    e.currentTarget.style.boxShadow = "0 8px 24px var(--neon-glow)"
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = "var(--border)"
-                    e.currentTarget.style.transform = "translateY(0)"
-                    e.currentTarget.style.boxShadow = "var(--shadow)"
-                  }}
-                >
-                  {/* Decorative bg */}
-                  <div style={{
-                    position: "absolute", top: 0, right: 0,
-                    width: 100, height: 100, borderRadius: "50%",
-                    background: "radial-gradient(circle, var(--neon-subtle) 0%, transparent 70%)",
-                    transform: "translate(30px, -30px)",
-                    pointerEvents: "none",
-                  }}/>
-
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
-                    <div>
-                      <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>
-                        {card.card_name}
-                      </h3>
-                      <span style={{
-                        display: "inline-flex", alignItems: "center",
-                        padding: "3px 8px", borderRadius: 99,
-                        background: "var(--bg-2)",
-                        border: "1px solid var(--border)",
-                        fontSize: 11, fontWeight: 600,
-                        color: "var(--text-muted)",
-                        fontFamily: "'Syne', sans-serif",
-                        textTransform: "capitalize",
-                      }}>
-                        {card.level}
-                      </span>
-                    </div>
+                    width: "100%", height: "100%"
+                  }}>
+                    {/* Decorative bg */}
                     <div style={{
-                      fontFamily: "'Syne', sans-serif", fontWeight: 800,
-                      fontSize: 24, color: "var(--neon)",
-                    }}>
-                      {card.progress_percent}%
+                      position: "absolute", top: 0, right: 0,
+                      width: 100, height: 100, borderRadius: "50%",
+                      background: "radial-gradient(circle, var(--neon-subtle) 0%, transparent 70%)",
+                      transform: "translate(30px, -30px)",
+                      pointerEvents: "none",
+                      zIndex: 1
+                    }}/>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, position: "relative", zIndex: 2 }}>
+                      <div>
+                        <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>
+                          {card.card_name}
+                        </h3>
+                        <span style={{
+                          display: "inline-flex", alignItems: "center",
+                          padding: "3px 8px", borderRadius: 99,
+                          background: "var(--bg-2)",
+                          border: "1px solid var(--border)",
+                          fontSize: 11, fontWeight: 600,
+                          color: "var(--text-muted)",
+                          fontFamily: "'Syne', sans-serif",
+                          textTransform: "capitalize",
+                        }}>
+                          {card.level}
+                        </span>
+                      </div>
+                      <div style={{
+                        fontFamily: "'Syne', sans-serif", fontWeight: 800,
+                        fontSize: 24, color: "var(--neon)",
+                      }}>
+                        {card.progress_percent}%
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="progress-bar" style={{ marginBottom: 20 }}>
-                    <div className="progress-fill" style={{ width: `${card.progress_percent}%` }}/>
-                  </div>
+                    <div className="progress-bar" style={{ marginBottom: 20, position: "relative", zIndex: 2 }}>
+                      <div className="progress-fill" style={{ width: `${card.progress_percent}%` }}/>
+                    </div>
 
-                  <button
-                    onClick={() => router.push(`/roadmap/${card.card_id}`)}
-                    className="btn-neon"
-                    style={{
-                      width: "100%",
-                      padding: "10px 16px",
-                      borderRadius: 10, fontSize: 14,
-                      display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                    }}
-                  >
-                    Continue Learning
-                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                  </button>
-                </div>
+                    <button
+                      onClick={() => router.push(`/roadmap/${card.card_id}`)}
+                      className="btn-neon"
+                      style={{
+                        width: "100%",
+                        padding: "10px 16px",
+                        borderRadius: 10, fontSize: 14,
+                        display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                        position: "relative", zIndex: 2
+                      }}
+                    >
+                      Continue Learning
+                      <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                      </svg>
+                    </button>
+                  </SpotlightCard>
+                </BorderGlow>
               ))}
             </div>
           )}

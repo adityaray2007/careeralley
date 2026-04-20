@@ -142,7 +142,7 @@ export default function GroupChatPage() {
       currentUserID.current = payload.user_id
     } catch {}
 
-    fetch("http://localhost:8080/chat/my-cards", {
+    fetch((process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/chat/my-cards", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
@@ -173,7 +173,7 @@ export default function GroupChatPage() {
     const token = localStorage.getItem("token")
 
     // Load history first
-    fetch(`http://localhost:8080/chat/${card.card_id}/history`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080"}/chat/${card.card_id}/history`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(r => r.json())
@@ -182,8 +182,8 @@ export default function GroupChatPage() {
       })
       .catch(() => {})
 
-    // Connect WebSocket
-    const ws = new WebSocket(`ws://localhost:8080/chat/${card.card_id}/ws?token=${token}`)
+    const WS_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080").replace("http", "ws")
+    const ws = new WebSocket(`${WS_URL}/chat/${card.card_id}/ws?token=${token}`)
     wsRef.current = ws
 
     ws.onopen = () => {

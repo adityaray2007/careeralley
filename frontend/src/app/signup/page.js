@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { post } from "../../lib/api"
 import { useTheme } from "../../lib/ThemeContext"
+import SoftAurora from "../../components/SoftAurora"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -35,7 +36,7 @@ export default function SignupPage() {
   }
 
   const googleSignup = () => {
-    window.location.href = "http://localhost:8080/auth/google"
+    window.location.href = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080") + "/auth/google"
   }
 
   const strength = password.length === 0 ? 0 : password.length < 6 ? 1 : password.length < 10 ? 2 : 3
@@ -51,13 +52,20 @@ export default function SignupPage() {
       overflow: "hidden",
     }}>
       <div style={{
-        position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-        background: theme === "dark"
-          ? "radial-gradient(ellipse at 80% 50%, rgba(181,242,61,0.06) 0%, transparent 60%)"
-          : "radial-gradient(ellipse at 80% 50%, rgba(181,242,61,0.15) 0%, transparent 60%)",
+        position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0, opacity: 0.5,
         pointerEvents: "none",
-      }}/>
-
+      }}>
+        <SoftAurora 
+          color1="#0a0a0a" 
+          color2="#b5f23d" 
+          speed={0.4} 
+          noiseFrequency={2.5} 
+          scale={1.2} 
+          brightness={1.5}
+          bandHeight={0.4}
+          enableMouseInteraction={false}
+        />
+      </div>
       {/* Form side */}
       <div style={{
         flex: 1,

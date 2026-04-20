@@ -33,10 +33,10 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, Suspense } from "react"
 import { useRouter } from "next/navigation"
 
-export default function AuthSuccess() {
+function AuthSuccessContent() {
   const params = useSearchParams()
   const router = useRouter()
 
@@ -49,7 +49,7 @@ export default function AuthSuccess() {
     } else {
       router.push("/onboarding")
     }
-  }, [])
+  }, [params, router])
 
   return (
     <div style={{
@@ -68,7 +68,7 @@ export default function AuthSuccess() {
         }}/>
         <div style={{
           position: "absolute", inset: 0, borderRadius: "50%",
-          border: "3px solid transparent",
+          border: "3px transparent solid",
           borderTopColor: "#b5f23d",
           animation: "spin-slow 1s linear infinite",
         }}/>
@@ -84,3 +84,12 @@ export default function AuthSuccess() {
     </div>
   )
 }
+
+export default function AuthSuccess() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", background: "var(--bg)" }} />}>
+      <AuthSuccessContent />
+    </Suspense>
+  )
+}
+

@@ -373,17 +373,23 @@ func GetUserDashboard(c *gin.Context) {
 	todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	weekStart := now.AddDate(0, 0, -7)
 
-	config.DB.
-		Model(&models.StudySession{}).
-		Where("user_id = ? AND start_time >= ?", userID, todayStart).
-		Select("COALESCE(SUM(duration),0)").
-		Scan(&todayMinutes)
+	var sessions []models.StudySession
+	config.DB.Where("user_id = ? AND start_time >= ?", userID, weekStart).Find(&sessions)
 
-	config.DB.
-		Model(&models.StudySession{}).
-		Where("user_id = ? AND start_time >= ?", userID, weekStart).
-		Select("COALESCE(SUM(duration),0)").
-		Scan(&weeklyMinutes)
+	for _, s := range sessions {
+		var mins int
+		if s.EndTime == nil {
+			mins = int(time.Since(s.StartTime).Minutes())
+		} else {
+			mins = s.Duration
+		}
+
+		weeklyMinutes += mins
+
+		if !s.StartTime.Before(todayStart) {
+			todayMinutes += mins
+		}
+	}
 
 	// -------------------
 	// Active cards

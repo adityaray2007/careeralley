@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import SidebarLayout from "../../components/SidebarLayout"
 import { get } from "../../lib/api"
+import BorderGlow from "../../components/BorderGlow"
+import SpotlightCard from "../../components/SpotlightCard"
 
 export default function RoadmapsPage() {
 
@@ -80,66 +82,68 @@ export default function RoadmapsPage() {
             gap: 16
           }}>
             {cards.map((card, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: 20,
-                  padding: 24,
-                  boxShadow: "var(--shadow)",
-                  transition: "0.2s",
-                  cursor: "pointer"
-                }}
-                onClick={() => router.push(`/roadmap/${card.card_id}`)}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = "translateY(-3px)"
-                  e.currentTarget.style.borderColor = "var(--neon)"
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = "translateY(0)"
-                  e.currentTarget.style.borderColor = "var(--border)"
-                }}
-              >
-
-                <h3 style={{
-                  fontFamily: "'Syne', sans-serif",
-                  fontWeight: 700,
-                  marginBottom: 6
-                }}>
-                  {card.card_name}
-                </h3>
-
-                <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 10 }}>
-                  Level: <strong>{card.level}</strong>
-                </p>
-
-                <div className="progress-bar" style={{ marginBottom: 12 }}>
+              <BorderGlow key={i} animated={true} borderRadius={20} glowRadius={30} edgeSensitivity={20} backgroundColor="transparent" style={{ width: "100%", height: "100%" }}>
+                <SpotlightCard className="custom-spotlight" spotlightColor="rgba(181, 242, 61, 0.2)" style={{ borderRadius: 20, width: "100%", height: "100%" }}>
                   <div
-                    className="progress-fill"
-                    style={{ width: `${card.progress_percent}%` }}
-                  />
-                </div>
+                    style={{
+                      background: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: 20,
+                      padding: 24,
+                      boxShadow: "var(--shadow)",
+                      transition: "0.2s",
+                      cursor: "pointer",
+                      height: "100%"
+                    }}
+                    onClick={() => router.push(`/roadmap/${card.card_id}`)}
+                    onMouseEnter={e => {
+                      e.currentTarget.style.borderColor = "var(--border-strong)"
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.borderColor = "var(--border)"
+                    }}
+                  >
 
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center"
-                }}>
-                  <span style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: "var(--neon)"
-                  }}>
-                    {card.progress_percent}% complete
-                  </span>
+                    <h3 style={{
+                      fontFamily: "'Syne', sans-serif",
+                      fontWeight: 700,
+                      marginBottom: 6
+                    }}>
+                      {card.card_name}
+                    </h3>
 
-                  <span style={{ fontSize: 12, opacity: 0.6 }}>
-                    Open →
-                  </span>
-                </div>
+                    <p style={{ fontSize: 13, color: "var(--text-muted)", marginBottom: 10 }}>
+                      Level: <strong>{card.level}</strong>
+                    </p>
 
-              </div>
+                    <div className="progress-bar" style={{ marginBottom: 12 }}>
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${card.progress_percent}%` }}
+                      />
+                    </div>
+
+                    <div style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center"
+                    }}>
+                      <span style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "var(--neon)"
+                      }}>
+                        {card.progress_percent}% complete
+                      </span>
+
+                      <span style={{ fontSize: 12, opacity: 0.6 }}>
+                        Open →
+                      </span>
+                    </div>
+
+                  </div>
+                </SpotlightCard>
+              </BorderGlow>
             ))}
           </div>
         )}
