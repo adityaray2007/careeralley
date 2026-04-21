@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react"
 
-const ThemeContext = createContext({ theme: "light", toggleTheme: () => {} })
+const ThemeContext = createContext({ theme: "dark", toggleTheme: () => {} })
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light")
+  const [theme, setTheme] = useState("dark")
 
   useEffect(() => {
-    const saved = localStorage.getItem("ca-theme") || "light"
+    const saved = localStorage.getItem("ca-theme") || "dark"
     setTheme(saved)
     document.documentElement.setAttribute("data-theme", saved)
   }, [])
