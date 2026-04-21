@@ -402,14 +402,36 @@ export default function GroupChatPage() {
                     </div>
                   </div>
                 </div>
-                <div style={{
-                  padding: "5px 12px", borderRadius: 99,
-                  background: "var(--neon-subtle)",
-                  border: "1px solid rgba(181,242,61,0.2)",
-                  fontSize: 12, fontWeight: 700, color: "var(--neon-dim)",
-                  fontFamily: "'Syne', sans-serif",
-                }}>
-                  # {selectedCard.card_name.toLowerCase().replace(/\s+/g, "-")}
+                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                  <button
+                    onClick={() => {
+                      const roomName = `careeralley-group-${selectedCard.card_id}-${selectedCard.card_name.replace(/[^a-zA-Z0-9]/g, "")}`;
+                      window.open(`https://meet.jit.si/${roomName}`, "Jitsi", "width=800,height=600");
+                    }}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 6,
+                      padding: "6px 14px", borderRadius: 99,
+                      background: "rgba(181,242,61,0.1)",
+                      border: "1px solid rgba(181,242,61,0.4)",
+                      color: "var(--neon-dim)", fontSize: 12, fontWeight: 700,
+                      fontFamily: "'Syne', sans-serif", cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "var(--neon)"; e.currentTarget.style.color = "#000" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(181,242,61,0.1)"; e.currentTarget.style.color = "var(--neon-dim)" }}
+                  >
+                    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                    Join Voice Call
+                  </button>
+                  <div style={{
+                    padding: "5px 12px", borderRadius: 99,
+                    background: "var(--neon-subtle)",
+                    border: "1px solid rgba(181,242,61,0.2)",
+                    fontSize: 12, fontWeight: 700, color: "var(--neon-dim)",
+                    fontFamily: "'Syne', sans-serif",
+                  }}>
+                    # {selectedCard.card_name.toLowerCase().replace(/\s+/g, "-")}
+                  </div>
                 </div>
               </div>
 
