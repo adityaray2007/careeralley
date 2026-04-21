@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useTheme } from "../lib/ThemeContext"
 import Sidebar from "./Sidebar"
 import { useRouter } from "next/navigation"
@@ -7,9 +8,21 @@ import { useRouter } from "next/navigation"
 export default function SidebarLayout({ children }) {
   const { theme, toggleTheme } = useTheme()
   const router = useRouter()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
     <div className="layout" style={{ position: "relative", zIndex: 1 }}>
+      {/* Mobile backdrop */}
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? "open" : ""}`}
+        onClick={() => setIsSidebarOpen(false)}
+        style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 90,
+          backdropFilter: "blur(4px)", transition: "opacity 0.3s ease",
+          opacity: isSidebarOpen ? 1 : 0, pointerEvents: isSidebarOpen ? "auto" : "none",
+          display: "none" // overridden by css
+        }}
+      />
       <div style={{
         position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none",
         background: "linear-gradient(to bottom, #060606 0%, #0a0a0a 100%)",
@@ -19,8 +32,8 @@ export default function SidebarLayout({ children }) {
           width: "100%", height: "50%", background: "radial-gradient(ellipse at 50% 0%, rgba(181,242,61,0.04) 0%, transparent 70%)"
         }}/>
       </div>
-      <Sidebar />
-      <main className="main-content" style={{ position: "relative", zIndex: 10 }}>
+      <Sidebar isOpen={isSidebarOpen} />
+      <main className={`main-content ${isSidebarOpen ? "sidebar-open" : ""}`} style={{ position: "relative", zIndex: 10 }}>
         {/* Top bar with theme toggle */}
         <div style={{
           position: "sticky",
@@ -30,12 +43,31 @@ export default function SidebarLayout({ children }) {
           borderBottom: "1px solid var(--border)",
           padding: "14px 32px",
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "space-between",
           alignItems: "center",
           gap: 12,
           backdropFilter: "blur(8px)",
         }}>
-          <button
+          {/* Hamburger Menu (Mobile Only) */}
+          <button 
+            className="mobile-menu-btn"
+            onClick={() => setIsSidebarOpen(true)}
+            style={{
+              display: "none", // overridden by css
+              background: "var(--bg-card)", border: "1.5px solid var(--border-strong)", 
+              color: "var(--neon-dim)", borderRadius: "8px",
+              cursor: "pointer", padding: "6px",
+              alignItems: "center", justifyContent: "center",
+              boxShadow: "var(--shadow)", transition: "all 0.2sease"
+            }}
+          >
+            <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          <div style={{ display: "flex", gap: 12, marginLeft: "auto" }}>
+            <button
             onClick={() => router.push("/profile")}
             style={{
               width: 42,

@@ -74,7 +74,7 @@ const navItems = [
   },
 ]
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen }) {
   const pathname = usePathname()
   const router = useRouter()
   const { theme, toggleTheme } = useTheme()
@@ -121,8 +121,8 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="sidebar"
-      style={{ background: c.bg, borderRightColor: c.border, transition: "background 0.3s ease, border-color 0.3s ease" }}
+      className={`sidebar ${isOpen ? "open" : ""}`}
+      style={{ background: c.bg, borderRightColor: c.border, transition: "background 0.3s ease, border-color 0.3s ease, transform 0.3s ease" }}
     >
       {/* Logo */}
       <div style={{ padding: "28px 24px 20px", borderBottom: `1px solid ${c.border}` }}>

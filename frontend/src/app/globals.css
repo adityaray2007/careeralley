@@ -279,7 +279,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   z-index: 100;
   border-right: 1px solid rgba(181, 242, 61, 0.08);
-  transition: width 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .main-content {
@@ -287,6 +287,26 @@ h1, h2, h3, h4, h5, h6 {
   flex: 1;
   min-height: 100vh;
   background: var(--bg);
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.4);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+  .sidebar-overlay.open {
+    display: block !important;
+  }
 }
 
 /* Tag */
