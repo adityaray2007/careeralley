@@ -94,15 +94,10 @@ export default function InterviewRoomPage() {
 
         if (currentPhase === "round1") {
           const round1Qs = qs.filter(q => q.round === "first")
-          if (round1Qs.length >= iv.question_count && round1Qs.every(q => q.score > 0 || q.score === 0)) {
-            setPhaseWithRef("round2_briefing")
-          }
-        }
+          const allScored = round1Qs.length >= iv.question_count && round1Qs.every(q => q.score > 0)
 
-        if (currentPhase === "round2") {
-          const round2Qs = qs.filter(q => q.round === "second")
-          if (round2Qs.length >= iv.question_count && round2Qs.every(q => q.score > 0 || q.score === 0)) {
-            setPhaseWithRef("completed")
+          if ((isInterviewee && allScored) || qs.some(q => q.round === "second")) {
+            setPhaseWithRef("round2_briefing")
           }
         }
       }
@@ -159,12 +154,7 @@ export default function InterviewRoomPage() {
     setScoring(false)
     setPendingScore(null)
     setCurrentQuestion(null)
-    if (questionNumber >= interview.question_count) {
-      if (phase === "round1") setPhaseWithRef("round2_briefing")
-      else await completeInterview()
-    } else {
-      setQuestionNumber(n => n + 1)
-    }
+    setQuestionNumber(n => n + 1)
   }
 
   const completeInterview = async () => {
@@ -301,13 +291,13 @@ export default function InterviewRoomPage() {
 
             {/* Progress */}
             <div className="progress-bar" style={{ height: 8 }}>
-              <div className="progress-fill" style={{ width: `${((questionNumber - 1) / interview.question_count) * 100}%` }} />
+              <div className="progress-fill" style={{ width: `${(Math.min(questionNumber - 1, interview.question_count) / interview.question_count) * 100}%` }} />
             </div>
 
             {/* INTERVIEWER VIEW */}
             {iAmInterviewer ? (
               <div>
-                {!currentQuestion && !generatingQ && (
+                {!currentQuestion && !generatingQ && questionNumber <= interview.question_count && (
                   <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, padding: "48px 32px", textAlign: "center", boxShadow: "var(--shadow)" }}>
                     <div style={{ width: 64, height: 64, borderRadius: 18, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 20px" }}>💡</div>
                     <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 20, marginBottom: 8 }}>Ready for Question {questionNumber}?</h3>
@@ -316,6 +306,24 @@ export default function InterviewRoomPage() {
                     </p>
                     <button onClick={generateNextQuestion} className="btn-neon" style={{ padding: "13px 32px", borderRadius: 12, fontSize: 15 }}>
                       Generate Question {questionNumber} →
+                    </button>
+                  </div>
+                )}
+
+                {!currentQuestion && !generatingQ && questionNumber > interview.question_count && (
+                  <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, padding: "48px 32px", textAlign: "center", boxShadow: "var(--shadow)", animation: "fadeIn 0.3s ease" }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 18, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 20px" }}>🏁</div>
+                    <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 22, marginBottom: 8 }}>Round Complete!</h3>
+                    <p style={{ color: "var(--text-muted)", marginBottom: 28, fontSize: 14, lineHeight: 1.6 }}>
+                      You have finished scoring all {interview.question_count} questions.
+                    </p>
+                    <button 
+                      onClick={() => {
+                        if (phase === "round1") setPhaseWithRef("round2_briefing")
+                        else completeInterview()
+                      }} 
+                      className="btn-neon" style={{ padding: "14px 34px", borderRadius: 12, fontSize: 15 }}>
+                      {phase === "round1" ? "Finish Round 1 →" : "Finish Interview & See Results 🏆"}
                     </button>
                   </div>
                 )}
@@ -382,7 +390,7 @@ export default function InterviewRoomPage() {
                         className="btn-neon"
                         style={{ width: "100%", padding: "13px", borderRadius: 12, fontSize: 14, opacity: pendingScore === null ? 0.5 : 1 }}
                       >
-                        {scoring ? "Saving..." : questionNumber >= interview.question_count ? "Submit & Finish Round ✓" : "Submit Score & Next →"}
+                        {scoring ? "Saving..." : questionNumber >= interview.question_count ? "Submit Final Score ✓" : "Submit Score & Next →"}
                       </button>
                     </div>
 
@@ -415,7 +423,9 @@ export default function InterviewRoomPage() {
                 </p>
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "12px 22px", borderRadius: 12, background: "var(--neon-subtle)", border: "1px solid rgba(181,242,61,0.2)", fontSize: 14, fontWeight: 700, color: "var(--neon-dim)", fontFamily: "'Syne', sans-serif" }}>
                   <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--neon)", animation: "pulse-neon 2s infinite" }} />
-                  Question {questionNumber} of {interview.question_count}
+                  {questionNumber > interview.question_count 
+                    ? "Waiting for interviewer to finish..." 
+                    : `Question ${questionNumber} of ${interview.question_count}`}
                 </div>
 
                 {/* Mini progress dots */}

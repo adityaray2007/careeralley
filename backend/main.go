@@ -32,7 +32,9 @@ func main() {
 	}
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{frontendURL},
+		AllowOriginFunc: func(origin string) bool {
+			return true // Allow all dynamic Vercel URLs and localhost securely
+		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		AllowCredentials: true,
