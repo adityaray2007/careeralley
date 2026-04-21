@@ -31,7 +31,10 @@ func ConnectDB() {
 		dsn = "host=localhost user=adityaray dbname=careeralley port=5432 sslmode=disable"
 	}
 
-	database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+	database, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  dsn,
+		PreferSimpleProtocol: true, // Fixes "prepared statement already exists" error with Supabase pooler
+	}), &gorm.Config{
 		Logger: newLogger,
 	})
 
