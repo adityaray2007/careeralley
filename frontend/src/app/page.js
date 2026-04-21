@@ -57,6 +57,22 @@ export default function LandingPage() {
     <div style={{ minHeight: "100vh", background: "#060606", color: "#f7f7f7", overflowX: "hidden", position: "relative" }}>
 
       <style>{`
+        .resp-padding { padding-left: 48px; padding-right: 48px; }
+        .resp-nav { flex-direction: row; }
+        .resp-grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .resp-grid-2 { grid-template-columns: 1fr 1fr; }
+        .resp-team-box { padding: 60px; }
+        .resp-cta-box { padding: 80px 48px; }
+        
+        @media (max-width: 768px) {
+          .resp-padding { padding-left: 20px !important; padding-right: 20px !important; }
+          .resp-nav { flex-direction: column !important; gap: 16px !important; }
+          .resp-grid-3 { grid-template-columns: 1fr !important; }
+          .resp-grid-2 { grid-template-columns: 1fr !important; gap: 24px !important; }
+          .resp-team-box { padding: 30px !important; }
+          .resp-cta-box { padding: 40px 20px !important; }
+        }
+
         .feature-card {
           padding: 28px;
           border-radius: 20px;
@@ -102,9 +118,9 @@ export default function LandingPage() {
       `}</style>
 
       {/* Nav */}
-      <nav style={{
+      <nav className="resp-padding resp-nav" style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        padding: "16px 48px",
+        paddingTop: "16px", paddingBottom: "16px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
         background: "rgba(6,6,6,0.5)",
         backdropFilter: "blur(16px)",
@@ -153,11 +169,11 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{
+      <section className="resp-padding" style={{
         minHeight: "100vh",
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        padding: "120px 48px 80px",
+        paddingTop: "120px", paddingBottom: "80px",
         position: "relative",
         textAlign: "center",
         overflow: "hidden",
@@ -251,10 +267,10 @@ export default function LandingPage() {
         </div>
 
         {/* Floating cards preview */}
-        <div style={{
+        <div className="resp-grid-3" style={{
           marginTop: 100,
-          display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16,
-          maxWidth: 700,
+          display: "grid", gap: 16,
+          maxWidth: 700, width: "100%",
           opacity: visible ? 1 : 0,
           transform: visible ? "translateY(0)" : "translateY(30px)",
           transition: "all 0.8s ease 0.2s",
@@ -291,7 +307,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section style={{ padding: "120px 48px", maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 10 }}>
+      <section className="resp-padding" style={{ paddingTop: "120px", paddingBottom: "120px", maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 10 }}>
         {/* Decorative Glows */}
         <div style={{
           position: "absolute", top: "10%", left: "-15%", zIndex: 0,
@@ -340,7 +356,7 @@ export default function LandingPage() {
       </section>
 
       {/* Team Section */}
-      <section style={{ padding: "0 48px 120px", maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 10 }}>
+      <section className="resp-padding" style={{ paddingTop: "0", paddingBottom: "120px", maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 10 }}>
 
         <div style={{
           position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 0,
@@ -349,11 +365,11 @@ export default function LandingPage() {
           filter: "blur(100px)", pointerEvents: "none"
         }} />
 
-        <div style={{ position: "relative", zIndex: 10, background: "rgba(15,15,15,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 32, padding: "60px", textAlign: "center" }}>
+        <div className="resp-team-box" style={{ position: "relative", zIndex: 10, background: "rgba(15,15,15,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: 32, textAlign: "center" }}>
           <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 32, fontWeight: 800, marginBottom: 12, color: "#fff" }}>Meet the Minds</h2>
           <p style={{ color: "rgba(255,255,255,0.6)", marginBottom: 48, fontSize: 16 }}>Engineered with precision by the incredibly talented DTI Project Team.</p>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+          <div className="resp-grid-2" style={{ display: "grid", textAlign: "left" }}>
             <div>
               <h3 style={{ color: "#b5f23d", fontSize: 14, textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 20 }}>Frontend Architects</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -394,16 +410,16 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section style={{
-        padding: "0 48px 100px",
-        textAlign: "center",
+      <section className="resp-padding" style={{
+        paddingTop: "0", paddingBottom: "100px",
+        textAlign: "center", textDecoration: "none",
         position: "relative", zIndex: 10
       }}>
-        <div style={{
+        <div className="resp-cta-box" style={{
           maxWidth: 900, margin: "0 auto",
           background: "linear-gradient(180deg, rgba(15,15,15,0.8) 0%, rgba(6,6,6,1) 100%)",
           border: "1px solid rgba(181,242,61,0.2)",
-          borderRadius: 28, padding: "80px 48px",
+          borderRadius: 28,
           position: "relative", overflow: "hidden",
         }}>
           <div style={{
@@ -437,11 +453,11 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer style={{
-        padding: "32px 48px",
+      <footer className="resp-padding resp-nav" style={{
+        paddingTop: "32px", paddingBottom: "32px",
         borderTop: "1px solid rgba(255,255,255,0.05)",
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        flexWrap: "wrap", gap: 12, position: "relative", zIndex: 10,
+        flexWrap: "wrap", position: "relative", zIndex: 10,
         background: "#060606"
       }}>
         <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, color: "#b5f23d", fontSize: 16 }}>
