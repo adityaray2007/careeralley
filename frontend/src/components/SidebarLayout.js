@@ -58,7 +58,7 @@ export default function SidebarLayout({ children }) {
               color: "var(--neon-dim)", borderRadius: "8px",
               cursor: "pointer", padding: "6px",
               alignItems: "center", justifyContent: "center",
-              boxShadow: "var(--shadow)", transition: "all 0.2sease"
+              boxShadow: "var(--shadow)", transition: "all 0.2s ease"
             }}
           >
             <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -136,6 +136,7 @@ export default function SidebarLayout({ children }) {
               </svg>
             )}
           </button>
+          </div>
         </div>
         <div style={{ padding: "32px" }}>
           {children}
